@@ -1,10 +1,8 @@
 artiFISHal
 ==========
 
-**artiFISHal** is a package of functions for the [R programming language](http://www.r-project.org/).  
-**artiFISHal** is a pelagic fish community simulator, which can be used to create artificial lakes and 
-populate them with known numbers of fish (identified in species-size groups) 
-to mimic pelagic fish communities. 
+**artiFISHal** is a package of functions for the [R programming language](http://www.r-project.org/).  **artiFISHal** is a pelagic fish community simulator, 
+which can be used to create artificial lakes and populate them with known numbers of fish (identified in species-size groups) to mimic pelagic fish communities. 
 **artiFISHal** can then be used to sample these fish with virtual acoustic and midwater trawl surveys.
 
 [Yule et al. (2013)](http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ) used **artiFISHal** 
