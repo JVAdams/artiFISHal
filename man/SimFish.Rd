@@ -39,7 +39,7 @@ Column names and descriptions:
   \item \code{TSC1}, \code{TSC2} = numeric, target strength and length relation coefficients, ts = TSC1 + TSC2*log10(len/10), (ts in db, len in mm)
   \item \code{TSCE} = numeric, error around target strength estimate, expressed as SD(estimate)/estimate
   \item \code{PropN} = numeric, approximate proportion of population that the row represents (automatically adjusted to ensure they sum to 1)
-  \item \code{E} = numeric, mean easting (km)
+  \item \code{E} = numeric, mean easting (m)
   \item \code{EE} = numeric, error around easting, expressed as SD/mean
   \item \code{N} = numeric, mean northing (m)
   \item \code{NE} = numeric, error around northing, expressed as SD/mean
