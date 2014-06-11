@@ -16,18 +16,20 @@ SimFish(LakeName, LakeNick, LkWidth = 30000, LkLength = 20000,
 
 \item{LkLength}{A numeric scalar, the length of the lake in the south-north direction (in m), default 20,000.}
 
-\item{BotDepMin}{A numeric scalar, the minimum bottom depth of the lake, at either the west or east shoreline (in m), default 20.}
+\item{BotDepMin}{A numeric scalar, the minimum bottom depth of the lake, at both the west and east shorelines (in m), default 20.}
 
 \item{BotDepMax}{A numeric scalar, the maximum bottom depth of the lake (in m).}
 
 \item{BotDepVertex}{A numeric scalar, the vertical distance from the surface to the "vertex" of the lake bottom (in m), default \code{2*BotDepMax}.
 The "vertex" of the lake bottom is the point at which the angled lake beds along the west and east shores would intersect,
-were they not cut off first by the specified \code{BotDepMax}.}
+were they not cut off first by the specified \code{BotDepMax}.
+View this \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/LakeFigures.JPG}{figure} for a diagram of the artificial lake.}
 
 \item{FishParam}{A data frame with 19 columns in which each row describes a sub-population of fish to be placed in the artificial lake.
 The first 11 columns must be completely filled in (no missing values).
 The last 8 columns may have some missing values.
-However, in each row, either water depth (WD and WDE) or distance to bottom (D2B and D2BE) \strong{must} be filled in, but \strong{not both}.
+However, in each row, \strong{either} water depth (WD and WDE) \strong{or} distance to bottom (D2B and D2BE) \strong{must} be filled in,
+but \strong{not both}.
 Column names and descriptions:
 \itemize{
   \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and lifestage) that will be used in plotting
@@ -72,7 +74,6 @@ which will be useful in surveying the population,
   \item \code{ints} = a numeric vector of length 2, the intercepts of the angled lake beds along the west and east shores of the lake (in m)
   \item \code{slopes} = a numeric vector of length 2, the slopes of the angled lake beds along the west and east shores of the lake (unitless)
   \item \code{d2shr.we} = a numeric vector of length 2, distance (in the "x" direction) from west and east shores excluded from lake (in m)
-  \item \code{mid.d} = ???,
 }
 (3) \code{FishInfo}, a list with the fish inputs supplied as arguments to \code{SimFish},
 (4) \code{FishParam}, the data frame supplied as an argument to \code{SimFish}, and
@@ -85,8 +86,14 @@ fish size (total length in mm \code{len}, weight in g \code{wt}, and target stre
 Create a simulated population of pelagic fish in an artificial lake.
 }
 \details{
-Describe the lake shape.  Refer to two figures (top and side views).
-You may wish to cap the total number of fish at 5 million for a memory of ~ 2 GB (2047 MB).
+The artificial lake can be imagined as a rectangular subset of a "real" lake.
+The east and west boundaries of the artifical lake do not reach the shoreline of the "real" lake, unless \code{BotDepMin} is set to zero.
+The north and south boundaries of the artificial lake do not ascend to a shoreline,
+instead the bottom depth remains constant in the south-north direction (i.e., for a given easting).
+The angle of the western lake bed is twice as steep as the angle of the eastern lake bed.
+View the top and side views of the artificial lake in this \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/LakeFigures.JPG}{diagram}.
+
+You may wish to cap the total number of fish at 5 million if your computer has a memory of about 2 GB (2047 MB).
 This limit can be increased if you have more memory available in R.
 You can check the memory available with \code{\link{memory.limit}()}.
 }
