@@ -2,24 +2,22 @@
 #'
 #' Create a simulated population of pelagic fish in an artificial lake.
 #' @param LakeName 		A character scalar, full name for artificial lake to be used in plot titles.
-#' @param LakeNick 		A character scalar, nickname for the artificial lake to be used in file names.
-#' @param LkWidth		A numeric scalar, the width of the lake in the west-east direction (in m), default 30,000.
-#' @param LkLength		A numeric scalar, the length of the lake in the south-north direction (in m), default 20,000.
-#' @param BotDepMin		A numeric scalar, the minimum bottom depth of the lake, at both the west and east shorelines (in m), default 20.
+#' @param LkWidth		A numeric scalar, the width of the lake in the west-east direction (in m).
+#' @param LkLength		A numeric scalar, the length of the lake in the south-north direction (in m).
+#' @param BotDepMin		A numeric scalar, the minimum bottom depth of the lake, at both the west and east shorelines (in m).
 #' @param BotDepMax		A numeric scalar, the maximum bottom depth of the lake (in m).
 #' @param BotDepVertex	A numeric scalar, the vertical distance from the surface to the "vertex" of the lake bottom (in m), default \code{2*BotDepMax}.  
 #' The "vertex" of the lake bottom is the point at which the angled lake beds along the west and east shores would intersect,
 #' were they not cut off first by the specified \code{BotDepMax}.  
 #' View this \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/LakeFigures.JPG}{figure} for a diagram of the artificial lake.
-#' @param FishParam		A data frame with 19 columns in which each row describes a sub-population of fish to be placed in the artificial lake.
+#' @param FishParam		A data frame with 18 columns in which each row describes a sub-population of fish to be placed in the artificial lake.
 #' The first 11 columns must be completely filled in (no missing values).
 #' The last 8 columns may have some missing values.  
-#' However, in each row, \strong{either} water depth (WD and WDE) \strong{or} distance to bottom (D2B and D2BE) \strong{must} be filled in, 
-#' but \strong{not both}.
+#' However, in each row, \strong{either} water depth (\code{WD} and \code{WDE}) \strong{or} distance to bottom (\code{D2B} and \code{D2BE}) 
+#' \strong{must} be filled in, but \strong{not both}.
 #' Column names and descriptions:
 #' \itemize{
-#'   \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and lifestage) that will be used in plotting
-#'   \item \code{Group} = character, full name of the group (e.g., fish species and lifestage)
+#'   \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and lifestage) used in plotting
 #'   \item \code{Z} = numeric, mean length (in mm)
 #'   \item \code{ZE} = numeric, error around mean length, expressed as SD/mean
 #'   \item \code{LWC1}, \code{LWC2} = numeric, length-weight regression coefficients, where wt = LWC1*len^LWC2, (wt in g, len in mm)
@@ -39,28 +37,37 @@
 #' @param TotNFish		A numeric scalar indicating the target number of fish to put in the lake.  
 #' The actual number of fish in the population will likely be smaller than \code{TotNFish}, because the process used to populate the lake with fish
 #' ends up with some fish out of water (beyond the boundaries of the artificial lake), which are then removed from the population.
-#' Memory on your computer will limit the size of \code{TotNFish}.
+#' Memory on your computer limits the size of \code{TotNFish} (see Details).
 #' @param TSRange		A numeric vector of length 2, the range of target strengths to use for the fish (in db), default c(-65, -20).
-#' @param plots.pdf		A character scalar, name of pdf file to store the diagnostic plots in.  If NA, the default, 
-#' plots will be displayed on the screen instead.  If FALSE, no plots will be created.
+#' @param PlotsPdf		A character scalar, name of pdf file to store the diagnostic plots in.  If NA, the default, 
+#' plots are displayed on the screen instead.  If FALSE, no plots are created.
 #' @param Seed			An integer scalar, starting seed for stochasticity incorporated in fish population generation.  
-#' Provide an integer to ensure the same population is generated with each call to \code{\link{SimFish}()}.  
-#' Otherwise, if set to NULL, the default, a random seed will be used, resulting in a different population with each call to \code{\link{SimFish}()}.  
-#' @return 				A list with five elements, (1) \code{Truth}, a data frame (or matrix?) with the total number and weight 
-#' of each fish group in the population, 
-#' (2) \code{LakeInfo}, a list with the lake inputs supplied as arguments to \code{SimFish} as well as a few additional objects 
-#' which will be useful in surveying the population,
+#' Use \code{Seed} to ensure the same population is generated with each call to \code{SimFish}.  
+#' Otherwise, if set to NULL, the default, a random seed is used, resulting in a different population with each call to \code{SimFish}.  
+#'
+#' @return 				A list with 6 elements:
 #' \itemize{
-#'   \item \code{ints} = a numeric vector of length 2, the intercepts of the angled lake beds along the west and east shores of the lake (in m)
-#'   \item \code{slopes} = a numeric vector of length 2, the slopes of the angled lake beds along the west and east shores of the lake (unitless)
-#'   \item \code{d2shr.we} = a numeric vector of length 2, distance (in the "x" direction) from west and east shores excluded from lake (in m)
-#' }
-#' (3) \code{FishInfo}, a list with the fish inputs supplied as arguments to \code{SimFish}, 
-#' (4) \code{FishParam}, the data frame supplied as an argument to \code{SimFish}, and
-#' (5) \code{FishPop}, a data frame in which each row is a fish, and the 10 columns describe the fish group (\code{sp}), location 
+#' 	\item \code{Truth}, a data frame with the total number and weight 
+#' of each fish group in the population; 
+#' 	\item \code{LakeInfo}, a list with the lake inputs supplied as arguments to \code{SimFish} as well as a few additional objects 
+#' which are used by \code{\link{SampFish}} in surveying the population,
+#' 		\itemize{
+#'   		\item \code{ints} = a numeric vector of length 2, the intercepts of the angled lake beds along the west and east shores of the lake (in m)
+#'   		\item \code{slopes} = a numeric vector of length 2, the slopes of the angled lake beds along the west and east shores of the lake (unitless)
+#'   		\item \code{d2shr.we} = a numeric vector of length 2, distance (in the west-east direction) from west and east shores excluded from lake (in m);
+#' 		}
+#' 	\item \code{FishInfo}, a list with the fish inputs supplied as arguments to \code{SimFish};
+#' 	\item \code{FishParam}, the data frame supplied as an argument to \code{SimFish};
+#' 	\item \code{FishPop}, a data frame in which each row is a fish, and 10 columns describe the fish group (\code{g}), location 
 #' (easting \code{f.east}, northing \code{f.north}, distance to shore \code{f.d2sh}, bottom depth \code{f.botdep}, 
-#' water depth \code{f.fdep}, distance to bottom \code{f.d2bot}, all in m), and 
-#' fish size (total length in mm \code{len}, weight in g \code{wt}, and target strength in db, \code{ts}).
+#' water depth \code{f.wdep}, distance to bottom \code{f.d2bot}, all in m), and 
+#' fish size (total length in mm \code{len}, weight in g \code{wt}, and target strength in db \code{ts}); and
+#' 	\item \code{PropExcluded}, a numeric vector showing the proportion of the requested number of fish, \code{TotNFish}, that were eliminated from
+#' the population based on their size (\code{LengthWeight}, \code{TS}) or 
+#' location (\code{Easting}, \code{Northing}, \code{WaterDepth}, \code{BottomDepth}, \code{D2Shore}).
+#' If you end up with far fewer fish than requested, this can be useful in troubleshooting where the problem might lie.
+#' }
+#'
 #' @details
 #'
 #' The artificial lake can be imagined as a rectangular subset of a "real" lake.  
@@ -74,13 +81,47 @@
 #' This limit can be increased if you have more memory available in R.
 #' You can check the memory available with \code{\link{memory.limit}()}.
 #'
+#' The diagnostic plots produced, if \code{PlotsPdf} is not FALSE, include 
+#' scatterplots of 1,000 fish randomly selected from the population, scatterplots of 250 fish randomly selected from each group, 
+#' and histograms of the size and spatial distribution of all the fish in the lake.
+#'
 #' @export
 #' @import 				MASS
+#' @references Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.  
+#' \href{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}{Evaluating 
+#' analytical approaches for estimating pelagic fish biomass using simulated fish communities}. 
+#' Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.
+#' @examples
+#'
+#' # parameters for small (a) and large (A) alewife as input to the simulator
+#' fishp <- data.frame(
+#' 	G = c("a", "A", "A"), 
+#' 	Z = c(50, 140, 140), ZE = c(0.25, 0.2, 0.2), 
+#' 	LWC1 = 0.000014, LWC2 = 2.8638, LWCE = 0.18, 
+#' 	TSC1 = -64.2, TSC2 = 20.5, TSCE = c(0.02, 0.07, 0.07), 
+#' 	PropN = c(0.55, 0.25, 0.20), 
+#' 	E = c(NA, 900, 2800), EE = c(NA, 4.5, 0.3), 
+#' 	N = NA, NE = NA, 
+#' 	WD = c(5, 15, 15), WDE = c(0.5, 0.7, 0.7), 
+#' 	D2B = NA, D2BE = NA)
+#' 
+#' # simulate the fish population
+#' res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000, BotDepMin=20, BotDepMax=100, 
+#' 	FishParam=fishp, TotNFish=1000)
+#'
+#' # look at the results
+#' res$Truth
+#' res$LakeInfo
+#' res$FishInfo
+#' head(res$FishParam)
+#' head(res$Fish)
+#' res$PropExcluded
+#' 
 
-SimFish <- function(LakeName, LakeNick, LkWidth=30000, LkLength=20000, BotDepMin=20, BotDepMax, BotDepVertex=2*BotDepMax, 
-	FishParam, TotNFish, TSRange=c(-65, -20), plots.pdf=NA, Seed=NULL) {
+SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVertex=2*BotDepMax, 
+	FishParam, TotNFish, TSRange=c(-65, -20), PlotsPdf=NA, Seed=NULL) {
 
-	if(!is.na(plots.pdf) & plots.pdf!=FALSE) pdf(plots.pdf, width=9, height=6.5, title="Diagnostics", paper="USr")
+	if(!is.na(PlotsPdf) & PlotsPdf!=FALSE) pdf(PlotsPdf, width=9, height=6.5, title="Diagnostics", paper="USr")
 
 	# total number of fish
 	FishParam$Nfish <- floor(FishParam$PropN * TotNFish / sum(FishParam$PropN))
@@ -107,16 +148,13 @@ SimFish <- function(LakeName, LakeNick, LkWidth=30000, LkLength=20000, BotDepMin
 	d2shr <- c(min(d2shr.we), d2shr.we[1]+mid.d)
 
 
-
-
 	###  FISH  (targets)  ###
 
 	# check that exactly ONE of these two variables (WD, D2B) were set to NA
 	look <- FishParam[, c("WD", "D2B")]
 	not1na <- apply(is.na(look), 1, sum) != 1
 	if(sum(not1na)>0) stop(paste("Rows ", paste(seq_along(not1na)[not1na], collapse=", "), 
-		".  Either a mean fishing depth or a mean distance to bottom MUST be specified, but NOT BOTH!", sep=""))
-#	rm(look, not1na)
+		".  Either a mean water depth or a mean distance to bottom MUST be specified, but NOT BOTH!", sep=""))
 
 	nrowz <- dim(FishParam)[1]
 	start.i <- (c(0, cumsum(FishParam$Nfish))+1)[1:nrowz]
@@ -126,7 +164,7 @@ SimFish <- function(LakeName, LakeNick, LkWidth=30000, LkLength=20000, BotDepMin
 
 	attach(FishParam)
 
-	fish <- data.frame(sp=rep(G, Nfish), f.east=NA, f.north=NA, f.d2sh=NA, f.botdep=NA, f.fdep=NA, f.d2bot=NA, len=NA, wt=NA, ts=NA)
+	fish <- data.frame(g=rep(G, Nfish), f.east=NA, f.north=NA, f.d2sh=NA, f.botdep=NA, f.wdep=NA, f.d2bot=NA, len=NA, wt=NA, ts=NA)
 	if(!is.null(Seed)) set.seed(Seed)
 	for(i in seq(nrowz)) {
 
@@ -148,13 +186,13 @@ SimFish <- function(LakeName, LakeNick, LkWidth=30000, LkLength=20000, BotDepMin
 			f.north <- rnorm(Nfish[i], N[i], NE[i]*N[i])
 			}
 
-		# distance to bottom available? no, then yes (if not, fishing depth is)
+		# distance to bottom available? no, then yes (if not, water depth is)
 		if(is.na(D2B[i])) {
-			f.fdep <- rnorm(Nfish[i], WD[i], WDE[i]*WD[i])
-			f.d2bot <- f.botdep - f.fdep
+			f.wdep <- rnorm(Nfish[i], WD[i], WDE[i]*WD[i])
+			f.d2bot <- f.botdep - f.wdep
 			} else {
 			f.d2bot <- rnorm(Nfish[i], D2B[i], D2BE[i]*D2B[i])
-			f.fdep <- f.botdep - f.d2bot
+			f.wdep <- f.botdep - f.d2bot
 			}
 
 		# generate lengths from gamma distribution
@@ -168,284 +206,181 @@ SimFish <- function(LakeName, LakeNick, LkWidth=30000, LkLength=20000, BotDepMin
 		ts. <- TSC1[i] + TSC2[i]*log10(len/10)
 		ts <- ts. + rnorm(Nfish[i], 0, TSCE[i]*abs(ts.))
 
-		fish[start.i[i]:end.i[i], -1] <- cbind(f.east, f.north, f.d2sh, f.botdep, f.fdep, f.d2bot, len, wt, ts)
+		fish[start.i[i]:end.i[i], -1] <- cbind(f.east, f.north, f.d2sh, f.botdep, f.wdep, f.d2bot, len, wt, ts)
 		}
 
+	rm(i, start.i, end.i, f.east, f.north, f.d2sh, f.botdep, f.wdep, f.d2bot, shape, scale, len, wt., wt, ts., ts)
 
-#	rm(i, start.i, end.i, f.east, f.north, f.d2sh, f.botdep, f.fdep, f.d2bot, shape, scale, len, wt., wt, ts., ts)
-
-	bad.d2sh <- fish$f.d2sh < d2shr[1] | fish$f.d2sh > d2shr[2] | is.na(fish$f.d2sh)
-	bad.east <- fish$f.east < eastr[1] | fish$f.east > eastr[2]
-
-	bad.north <- fish$f.north < northr[1] | fish$f.north > northr[2]
-	bad.botdep <- fish$f.botdep < 0 | fish$f.botdep > BotDepMax
-	bad.fdep <- fish$f.fdep < 0 | fish$f.fdep > fish$f.botdep
 	bad.lenwt <- fish$len < 0 | fish$wt < 0
 	bad.ts <- fish$ts < TSRange[1] | fish$ts > TSRange[2]
+	bad.east <- fish$f.east < eastr[1] | fish$f.east > eastr[2]
+	bad.north <- fish$f.north < northr[1] | fish$f.north > northr[2]
+	bad.wdep <- fish$f.wdep < 0 | fish$f.wdep > fish$f.botdep
+	bad.botdep <- fish$f.botdep < 0 | fish$f.botdep > BotDepMax
+	bad.d2sh <- fish$f.d2sh < d2shr[1] | fish$f.d2sh > d2shr[2] | is.na(fish$f.d2sh)
+
 	n <- dim(fish)[1]
 
 	# if you are losing a lot of fish, you can use this to try and determine why
-	if(FALSE) {
-	sum(bad.d2sh)/n
-	sum(bad.east)/n
-	sum(bad.north)/n
-	sum(bad.botdep)/n
-	sum(bad.fdep)/n
-	sum(bad.lenwt)/n
-	sum(bad.ts)/n
-	}
+	PropExcluded <- c(LengthWeight=sum(bad.lenwt), TS=sum(bad.ts), Easting=sum(bad.east), Northing=sum(bad.north), WaterDepth=sum(bad.wdep), 
+		BottomDepth=sum(bad.botdep), D2Shore=sum(bad.d2sh))/n
 
 	# get rid of rows that are beyond the bounds we set or that have other problems
-	bad <- bad.d2sh | bad.east | bad.north | bad.botdep | bad.fdep | bad.lenwt | bad.ts
+	bad <- bad.d2sh | bad.east | bad.north | bad.botdep | bad.wdep | bad.lenwt | bad.ts
 	fish <- fish[!bad, ]
-
-#	rm(bad.d2sh, bad.east, bad.north, bad.botdep, bad.fdep, bad.lenwt, bad.ts, bad)
-
 
 	detach(FishParam)
 
 
-
 	###  diagnostic plots  ###
-	if(is.na(plots.pdf) | plots.pdf!=FALSE) {
+	if(is.na(PlotsPdf) | PlotsPdf!=FALSE) {
 
+		# a random selection of 1,000 fish (total)
+		n <- dim(fish)[1]
+		pick <- if(n<1001) 1:n else sample(1:n, 1000)
+		attach(fish[pick, ])
+		sug <- sort(unique(g))
 
-	# a random selection of 1,000 fish (total)
-	n <- dim(fish)[1]
-	pick <- if(n<1001) 1:n else sample(1:n, 1000)
-	attach(fish[pick, ])
-	sus <- sort(unique(sp))
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-	plot(f.east/1000, -f.fdep, type="n", xlim=eastr/1000, ylim=c(-BotDepMax, 0), 
-		xlab="Easting  (km)", ylab="Water depth  (m)", main=paste(LakeName, "- Side View"))
-	lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints, slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000, 
-		-c(botdepr[1], rep(BotDepMax, 2), botdepr[1], 0, 0, botdepr[1]))
-
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		text(f.east[sel]/1000, -f.fdep[sel], sp[sel], col=i)
-		}
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-	plot(f.east/1000, f.north/1000, type="n", xlim=eastr/1000, ylim=northr/1000, 
-		xlab="Easting  (km)", ylab="Northing  (km)", main=paste(LakeName, "- Top View"))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		text(f.east[sel]/1000, f.north[sel]/1000, sp[sel], col=i)
-		}
-
-	detach(fish[pick, ])
-
-
-
-	# a random selection of 250 fish FROM EACH SPECIES
-
-	rows.sp <- split(seq(along=fish$sp), fish$sp)
-	pick <- unlist(lapply(rows.sp, function(x) sample(x, min(250, length(x)))))
-	attach(fish[pick, ])
-	sus <- sort(unique(sp))
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		plot(f.east/1000, -f.fdep, type="n", xlim=eastr/1000, ylim=c(-BotDepMax, 0), xlab="", ylab="")
+		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
+		plot(f.east/1000, -f.wdep, type="n", xlim=eastr/1000, ylim=c(-BotDepMax, 0), las=1, 
+			xlab="Easting  (km)", ylab="Water depth  (m)", main=paste(LakeName, "- Side View"))
 		lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints, slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000, 
 			-c(botdepr[1], rep(BotDepMax, 2), botdepr[1], 0, 0, botdepr[1]))
-		text(f.east[sel]/1000, -f.fdep[sel], sp[sel], col=i)
+
+		for(i in seq(along=sug)) {
+			sel <- g==sug[i]
+			text(f.east[sel]/1000, -f.wdep[sel], g[sel], col=i)
+			}
+
+		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
+		plot(f.east/1000, f.north/1000, type="n", xlim=eastr/1000, ylim=northr/1000, las=1, 
+			xlab="Easting  (km)", ylab="Northing  (km)", main=paste(LakeName, "- Top View"))
+		for(i in seq(along=sug)) {
+			sel <- g==sug[i]
+			text(f.east[sel]/1000, f.north[sel]/1000, g[sel], col=i)
+			}
+
+		detach(fish[pick, ])
+
+		# a random selection of 250 fish from each group
+
+		rows.g <- split(seq(along=fish$g), fish$g)
+		pick <- unlist(lapply(rows.g, function(x) sample(x, min(250, length(x)))))
+		attach(fish[pick, ])
+		sug <- sort(unique(g))
+
+		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
+		for(i in seq(along=sug)) {
+			sel <- g==sug[i]
+			plot(f.east/1000, -f.wdep, type="n", xlim=eastr/1000, ylim=c(-BotDepMax, 0), las=1, xlab="", ylab="")
+			lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints, slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000, 
+				-c(botdepr[1], rep(BotDepMax, 2), botdepr[1], 0, 0, botdepr[1]))
+			text(f.east[sel]/1000, -f.wdep[sel], g[sel], col=i)
+			}
+		mtext("Easting  (km)", side=1, outer=TRUE)
+		mtext("Water depth  (m)", side=2, outer=TRUE)
+		mtext(paste(LakeName, "- Side View"), side=3, outer=TRUE, font=2)
+
+		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
+		for(i in seq(along=sug)) {
+			sel <- g==sug[i]
+			plot(f.east/1000, f.north/1000, type="n", xlim=eastr/1000, ylim=northr/1000, las=1, xlab="", ylab="")
+			text(f.east[sel]/1000, f.north[sel]/1000, g[sel], col=i)
+			}
+		mtext("Easting  (km)", side=1, outer=TRUE)
+		mtext("Northing  (km)", side=2, outer=TRUE)
+		mtext(paste(LakeName, "- Top View"), side=3, outer=TRUE, font=2)
+
+		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
+		plot(len, -f.wdep, type="n", las=1, xlab="Fish length  (mm)", ylab="Water depth  (m)", 
+			main=paste(LakeName, "- Size at Depth"))
+		for(i in seq(along=sug)) {
+			sel <- g==sug[i]
+			text(len[sel], -f.wdep[sel], g[sel], col=i)
+			}
+
+		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
+		plot(ts, -f.wdep, type="n", las=1, xlab="Target strength  (dB)", ylab="Water depth  (m)", 
+			main=paste(LakeName, "- Size at Depth"))
+		for(i in seq(along=sug)) {
+			sel <- g==sug[i]
+			text(ts[sel], -f.wdep[sel], g[sel], col=i)
+			}
+
+		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
+		for(i in seq(along=sug)) {
+			sel <- g==sug[i]
+			plot(len[sel], wt[sel], las=1, xlab="", ylab="")
+			mtext(sug[i], side=3, adj=0.1, line=-2, font=2)
+			}
+		mtext("Length  (mm)", side=1, outer=TRUE)
+		mtext("Weight  (mm)", side=2, outer=TRUE)
+		mtext(paste(LakeName, "- Length-Weight Relation"), side=3, outer=TRUE, font=2)
+
+		detach(fish[pick, ])
+
+		# histograms of all fish
+
+		fishhist <- function(x, xlab, title, ...) {
+			if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+			par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
+			for(i in seq(along=sug)) {
+				sel <- g==sug[i]
+				hist(x[sel], nclass=25, col="gray", las=1, xlab="", ylab="", main="", ...)
+				box()
+				mtext(sug[i], side=3, adj=0.9, line=-2, font=2)
+				}
+			mtext(xlab, side=1, outer=TRUE)
+			mtext("Frequency", side=2, outer=TRUE)
+			mtext(paste(LakeName, "-", title), side=3, outer=TRUE, font=2)
 		}
-	mtext("Easting  (km)", side=1, outer=TRUE)
-	mtext("Water depth  (m)", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- Side View"), side=3, outer=TRUE, font=2)
 
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		plot(f.east/1000, f.north/1000, type="n", xlim=eastr/1000, ylim=northr/1000, xlab="", ylab="")
-		text(f.east[sel]/1000, f.north[sel]/1000, sp[sel], col=i)
+		attach(fish)
+
+		sug <- sort(unique(g))
+		fishhist(len, "Length  (mm)", "Length Distribution")
+		fishhist(wt, "Weight  (g)", "Weight Distribution")
+		fishhist(ts, "Target strength  (dB)", "TS Distribution")
+		fishhist(f.east/1000, "Easting  (km)", "Easting Distribution", xlim=eastr/1000)
+		fishhist(f.north/1000, "Northing  (km)", "Northing Distribution", xlim=northr/1000)
+		fishhist(f.d2sh, "Distance to Shore  (m)", "Distance to Shore Distribution", xlim=d2shr)
+		fishhist(f.wdep, "Water Depth  (m)", "Water Depth Distribution", xlim=c(0, BotDepMax))
+		fishhist(f.d2bot, "Distance to Bottom  (m)", "Distance to Bottom Distribution", xlim=c(0, BotDepMax))
+		fishhist(f.botdep, "Bottom Depth  (m)", "Bottom Depth Distribution", xlim=c(0, BotDepMax))
+
+		detach(fish)
+
+		if(!is.na(PlotsPdf)) graphics.off()
+
 		}
-	mtext("Easting  (km)", side=1, outer=TRUE)
-	mtext("Northing  (km)", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- Top View"), side=3, outer=TRUE, font=2)
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-	plot(len, -f.fdep, type="n", xlab="Fish length  (mm)", ylab="Water depth  (m)", 
-		main=paste(LakeName, "- Size at Depth"))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		text(len[sel], -f.fdep[sel], sp[sel], col=i)
-		}
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-	plot(ts, -f.fdep, type="n", xlab="Target strength  (dB)", ylab="Water depth  (m)", 
-		main=paste(LakeName, "- Size at Depth"))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		text(ts[sel], -f.fdep[sel], sp[sel], col=i)
-		}
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		plot(len[sel], wt[sel], xlab="", ylab="")
-		mtext(sus[i], side=3, adj=0.1, line=-2, font=2)
-		}
-	mtext("Length  (mm)", side=1, outer=TRUE)
-	mtext("Weight  (mm)", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- Length-Weight Relation"), side=3, outer=TRUE, font=2)
-
-	detach(fish[pick, ])
-
-
-
-	# histograms of all fish
-
-	attach(fish)
-
-	sus <- sort(unique(sp))
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		hist(len[sel], nclass=25, col="gray", xlab="", ylab="", main="")
-		box()
-		mtext(sus[i], side=3, adj=0.9, line=-2, font=2)
-		}
-	mtext("Length  (mm)", side=1, outer=TRUE)
-	mtext("Frequency", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- Length Distribution"), side=3, outer=TRUE, font=2)
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		hist(wt[sel], nclass=25, col="gray", xlab="", ylab="", main="")
-		box()
-		mtext(sus[i], side=3, adj=0.9, line=-2, font=2)
-		}
-	mtext("Weight  (g)", side=1, outer=TRUE)
-	mtext("Frequency", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- Weight Distribution"), side=3, outer=TRUE, font=2)
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		hist(ts[sel], nclass=25, col="gray", xlab="", ylab="", main="")
-		box()
-		mtext(sus[i], side=3, adj=0.9, line=-2, font=2)
-		}
-	mtext("Target strength  (dB)", side=1, outer=TRUE)
-	mtext("Frequency", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- TS Distribution"), side=3, outer=TRUE, font=2)
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		hist(f.east[sel]/1000, nclass=25, col="gray", xlim=eastr/1000, xlab="", ylab="", main="")
-		box()
-		mtext(sus[i], side=3, adj=0.9, line=-2, font=2)
-		}
-	mtext("Easting  (km)", side=1, outer=TRUE)
-	mtext("Frequency", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- Easting Distribution"), side=3, outer=TRUE, font=2)
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		hist(f.north[sel]/1000, nclass=25, col="gray", xlim=northr/1000, xlab="", ylab="", main="")
-		box()
-		mtext(sus[i], side=3, adj=0.9, line=-2, font=2)
-		}
-	mtext("Northing  (km)", side=1, outer=TRUE)
-	mtext("Frequency", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- Northing Distribution"), side=3, outer=TRUE, font=2)
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		hist(f.d2sh[sel], nclass=25, col="gray", xlim=d2shr, xlab="", ylab="", main="")
-		box()
-		mtext(sus[i], side=3, adj=0.9, line=-2, font=2)
-		}
-	mtext("Distance to Shore  (m)", side=1, outer=TRUE)
-	mtext("Frequency", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- Distance to Shore Distribution"), side=3, outer=TRUE, font=2)
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		hist(f.fdep[sel], nclass=25, col="gray", xlim=c(0, BotDepMax), xlab="", ylab="", main="")
-		box()
-		mtext(sus[i], side=3, adj=0.9, line=-2, font=2)
-		}
-	mtext("Fishing Depth  (m)", side=1, outer=TRUE)
-	mtext("Frequency", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- Fishing Depth Distribution"), side=3, outer=TRUE, font=2)
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		hist(f.d2bot[sel], nclass=25, col="gray", xlim=c(0, BotDepMax), xlab="", ylab="", main="")
-		box()
-		mtext(sus[i], side=3, adj=0.9, line=-2, font=2)
-		}
-	mtext("Distance to Bottom  (m)", side=1, outer=TRUE)
-	mtext("Frequency", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- Distance to Bottom Distribution"), side=3, outer=TRUE, font=2)
-
-	if(is.na(plots.pdf)) windows(w=9, h=6.5)
-	par(mfrow=n2mfrow(length(sus)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-	for(i in seq(along=sus)) {
-		sel <- sp==sus[i]
-		hist(f.botdep[sel], nclass=25, col="gray", xlim=c(0, BotDepMax), xlab="", ylab="", main="")
-		box()
-		mtext(sus[i], side=3, adj=0.9, line=-2, font=2)
-		}
-	mtext("Bottom Depth  (m)", side=1, outer=TRUE)
-	mtext("Frequency", side=2, outer=TRUE)
-	mtext(paste(LakeName, "- Bottom Depth Distribution"), side=3, outer=TRUE, font=2)
-
-	detach(fish)
-
-
-
-	if(!is.na(plots.pdf)) graphics.off()
-	}
-
 
 	# total number and weight of each species in population
-	truth <- cbind(n=table(fish$sp), kg=tapply(fish$wt, fish$sp, sum)/1000)
+	truth <- cbind(n=table(fish$g), kg=tapply(fish$wt, fish$g, sum)/1000)
 	truth <- as.data.frame(rbind(truth, Total=apply(truth, 2, sum, na.rm=TRUE)))
 
 	LkArea <- LkWidth * LkLength / 10000
-	truth$dens <- truth$n/LkArea
-	truth$bio <- truth$kg/LkArea
+	truth$nperha <- truth$n/LkArea
+	truth$kgperha <- truth$kg/LkArea
 
 	print(truth)
 
 	# output selected objects for use in sampling programs
 	list(
-		truth = truth, 
-		lkinfo = list(LakeName=LakeName, LakeNick=LakeNick, LkWidth=LkWidth, LkLength=LkLength, 
+		Truth = truth, 
+		LakeInfo = list(LakeName=LakeName, LkWidth=LkWidth, LkLength=LkLength, 
 			BotDepMin=BotDepMin, BotDepMax=BotDepMax, BotDepVertex=BotDepVertex,
 			ints=ints, slopes=slopes, d2shr.we=d2shr.we), 
-		fishinfo = list(TotNFish=TotNFish, TSRange=TSRange, Seed=Seed), 
-		FishParam=FishParam,
-		fish = fish
+		FishInfo = list(TotNFish=TotNFish, TSRange=TSRange, Seed=Seed), 
+		FishParam = FishParam,
+		Fish = fish,
+		PropExcluded = PropExcluded
 		)
 
 }

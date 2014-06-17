@@ -3,20 +3,18 @@
 \alias{SimFish}
 \title{Simulate a Fish Population}
 \usage{
-SimFish(LakeName, LakeNick, LkWidth = 30000, LkLength = 20000,
-  BotDepMin = 20, BotDepMax, BotDepVertex = 2 * BotDepMax, FishParam,
-  TotNFish, TSRange = c(-65, -20), plots.pdf = NA, Seed = NULL)
+SimFish(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVertex = 2 *
+  BotDepMax, FishParam, TotNFish, TSRange = c(-65, -20), PlotsPdf = NA,
+  Seed = NULL)
 }
 \arguments{
 \item{LakeName}{A character scalar, full name for artificial lake to be used in plot titles.}
 
-\item{LakeNick}{A character scalar, nickname for the artificial lake to be used in file names.}
+\item{LkWidth}{A numeric scalar, the width of the lake in the west-east direction (in m).}
 
-\item{LkWidth}{A numeric scalar, the width of the lake in the west-east direction (in m), default 30,000.}
+\item{LkLength}{A numeric scalar, the length of the lake in the south-north direction (in m).}
 
-\item{LkLength}{A numeric scalar, the length of the lake in the south-north direction (in m), default 20,000.}
-
-\item{BotDepMin}{A numeric scalar, the minimum bottom depth of the lake, at both the west and east shorelines (in m), default 20.}
+\item{BotDepMin}{A numeric scalar, the minimum bottom depth of the lake, at both the west and east shorelines (in m).}
 
 \item{BotDepMax}{A numeric scalar, the maximum bottom depth of the lake (in m).}
 
@@ -25,15 +23,14 @@ The "vertex" of the lake bottom is the point at which the angled lake beds along
 were they not cut off first by the specified \code{BotDepMax}.
 View this \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/LakeFigures.JPG}{figure} for a diagram of the artificial lake.}
 
-\item{FishParam}{A data frame with 19 columns in which each row describes a sub-population of fish to be placed in the artificial lake.
+\item{FishParam}{A data frame with 18 columns in which each row describes a sub-population of fish to be placed in the artificial lake.
 The first 11 columns must be completely filled in (no missing values).
 The last 8 columns may have some missing values.
-However, in each row, \strong{either} water depth (WD and WDE) \strong{or} distance to bottom (D2B and D2BE) \strong{must} be filled in,
-but \strong{not both}.
+However, in each row, \strong{either} water depth (\code{WD} and \code{WDE}) \strong{or} distance to bottom (\code{D2B} and \code{D2BE})
+\strong{must} be filled in, but \strong{not both}.
 Column names and descriptions:
 \itemize{
-  \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and lifestage) that will be used in plotting
-  \item \code{Group} = character, full name of the group (e.g., fish species and lifestage)
+  \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and lifestage) used in plotting
   \item \code{Z} = numeric, mean length (in mm)
   \item \code{ZE} = numeric, error around mean length, expressed as SD/mean
   \item \code{LWC1}, \code{LWC2} = numeric, length-weight regression coefficients, where wt = LWC1*len^LWC2, (wt in g, len in mm)
@@ -54,33 +51,40 @@ Column names and descriptions:
 \item{TotNFish}{A numeric scalar indicating the target number of fish to put in the lake.
 The actual number of fish in the population will likely be smaller than \code{TotNFish}, because the process used to populate the lake with fish
 ends up with some fish out of water (beyond the boundaries of the artificial lake), which are then removed from the population.
-Memory on your computer will limit the size of \code{TotNFish}.}
+Memory on your computer limits the size of \code{TotNFish} (see Details).}
 
 \item{TSRange}{A numeric vector of length 2, the range of target strengths to use for the fish (in db), default c(-65, -20).}
 
-\item{plots.pdf}{A character scalar, name of pdf file to store the diagnostic plots in.  If NA, the default,
-plots will be displayed on the screen instead.  If FALSE, no plots will be created.}
+\item{PlotsPdf}{A character scalar, name of pdf file to store the diagnostic plots in.  If NA, the default,
+plots are displayed on the screen instead.  If FALSE, no plots are created.}
 
 \item{Seed}{An integer scalar, starting seed for stochasticity incorporated in fish population generation.
-Provide an integer to ensure the same population is generated with each call to \code{\link{SimFish}()}.
-Otherwise, if set to NULL, the default, a random seed will be used, resulting in a different population with each call to \code{\link{SimFish}()}.}
+Use \code{Seed} to ensure the same population is generated with each call to \code{SimFish}.
+Otherwise, if set to NULL, the default, a random seed is used, resulting in a different population with each call to \code{SimFish}.}
 }
 \value{
-A list with five elements, (1) \code{Truth}, a data frame (or matrix?) with the total number and weight
-of each fish group in the population,
-(2) \code{LakeInfo}, a list with the lake inputs supplied as arguments to \code{SimFish} as well as a few additional objects
-which will be useful in surveying the population,
+A list with 6 elements:
 \itemize{
-  \item \code{ints} = a numeric vector of length 2, the intercepts of the angled lake beds along the west and east shores of the lake (in m)
-  \item \code{slopes} = a numeric vector of length 2, the slopes of the angled lake beds along the west and east shores of the lake (unitless)
-  \item \code{d2shr.we} = a numeric vector of length 2, distance (in the "x" direction) from west and east shores excluded from lake (in m)
-}
-(3) \code{FishInfo}, a list with the fish inputs supplied as arguments to \code{SimFish},
-(4) \code{FishParam}, the data frame supplied as an argument to \code{SimFish}, and
-(5) \code{FishPop}, a data frame in which each row is a fish, and the 10 columns describe the fish group (\code{sp}), location
+	\item \code{Truth}, a data frame with the total number and weight
+of each fish group in the population;
+	\item \code{LakeInfo}, a list with the lake inputs supplied as arguments to \code{SimFish} as well as a few additional objects
+which are used by \code{\link{SampFish}} in surveying the population,
+		\itemize{
+  		\item \code{ints} = a numeric vector of length 2, the intercepts of the angled lake beds along the west and east shores of the lake (in m)
+  		\item \code{slopes} = a numeric vector of length 2, the slopes of the angled lake beds along the west and east shores of the lake (unitless)
+  		\item \code{d2shr.we} = a numeric vector of length 2, distance (in the west-east direction) from west and east shores excluded from lake (in m);
+		}
+	\item \code{FishInfo}, a list with the fish inputs supplied as arguments to \code{SimFish};
+	\item \code{FishParam}, the data frame supplied as an argument to \code{SimFish};
+	\item \code{FishPop}, a data frame in which each row is a fish, and 10 columns describe the fish group (\code{g}), location
 (easting \code{f.east}, northing \code{f.north}, distance to shore \code{f.d2sh}, bottom depth \code{f.botdep},
-water depth \code{f.fdep}, distance to bottom \code{f.d2bot}, all in m), and
-fish size (total length in mm \code{len}, weight in g \code{wt}, and target strength in db, \code{ts}).
+water depth \code{f.wdep}, distance to bottom \code{f.d2bot}, all in m), and
+fish size (total length in mm \code{len}, weight in g \code{wt}, and target strength in db \code{ts}); and
+	\item \code{PropExcluded}, a numeric vector showing the proportion of the requested number of fish, \code{TotNFish}, that were eliminated from
+the population based on their size (\code{LengthWeight}, \code{TS}) or
+location (\code{Easting}, \code{Northing}, \code{WaterDepth}, \code{BottomDepth}, \code{D2Shore}).
+If you end up with far fewer fish than requested, this can be useful in troubleshooting where the problem might lie.
+}
 }
 \description{
 Create a simulated population of pelagic fish in an artificial lake.
@@ -96,5 +100,40 @@ View the top and side views of the artificial lake in this \href{https://raw.git
 You may wish to cap the total number of fish at 5 million if your computer has a memory of about 2 GB (2047 MB).
 This limit can be increased if you have more memory available in R.
 You can check the memory available with \code{\link{memory.limit}()}.
+
+The diagnostic plots produced, if \code{PlotsPdf} is not FALSE, include
+scatterplots of 1,000 fish randomly selected from the population, scatterplots of 250 fish randomly selected from each group,
+and histograms of the size and spatial distribution of all the fish in the lake.
+}
+\examples{
+# parameters for small (a) and large (A) alewife as input to the simulator
+fishp <- data.frame(
+	G = c("a", "A", "A"),
+	Z = c(50, 140, 140), ZE = c(0.25, 0.2, 0.2),
+	LWC1 = 0.000014, LWC2 = 2.8638, LWCE = 0.18,
+	TSC1 = -64.2, TSC2 = 20.5, TSCE = c(0.02, 0.07, 0.07),
+	PropN = c(0.55, 0.25, 0.20),
+	E = c(NA, 900, 2800), EE = c(NA, 4.5, 0.3),
+	N = NA, NE = NA,
+	WD = c(5, 15, 15), WDE = c(0.5, 0.7, 0.7),
+	D2B = NA, D2BE = NA)
+
+# simulate the fish population
+res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000, BotDepMin=20, BotDepMax=100,
+	FishParam=fishp, TotNFish=1000)
+
+# look at the results
+res$Truth
+res$LakeInfo
+res$FishInfo
+head(res$FishParam)
+head(res$Fish)
+res$PropExcluded
+}
+\references{
+Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.
+\href{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}{Evaluating
+analytical approaches for estimating pelagic fish biomass using simulated fish communities}.
+Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.
 }
 
