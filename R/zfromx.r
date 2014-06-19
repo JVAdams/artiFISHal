@@ -8,8 +8,8 @@
 #' @param slopes 	A numeric vector of length 2, the slopes of the angled lake beds along the west and east shores of the lake (unitless).
 #' @return 			A numeric vector, same length as \code{x}, with distances to bottom for each easting provided (in m).
 #' @export
-#' @details			An internal function called by \code{\link{SimFish}()}.
-#' @seealso			\code{\link{SimFish}}, \code{\link{dfromx}()}, \code{\link{xfromz}()}.
+#' @details			An internal function called by \code{\link{SimFish}}.
+#' @seealso			\code{\link{SimFish}}, \code{\link{dfromx}}, \code{\link{xfromz}}.
 
 zfromx <- function(x, maxz, eastr, ints, slopes) {
 	z <- rep(NA, length(x))

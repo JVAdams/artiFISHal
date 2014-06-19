@@ -9,7 +9,9 @@ Maintainer: Jean V. Adams <jvadams@usgs.gov>
 Depends:
     R (>= 3.1.0)
 Imports:
-    MASS
+    MASS,
+    plotrix,
+    rpanel
 Description: artiFISHal allows you to simulate and sample a population of fish.
     Use it to create an artificial lake and populate it with known numbers of
     fish (identified in species-size groups) to mimic pelagic fish communities.

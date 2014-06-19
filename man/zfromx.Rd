@@ -23,9 +23,9 @@ A numeric vector, same length as \code{x}, with distances to bottom for each eas
 Determine the distance to the bottom from a given easting.
 }
 \details{
-An internal function called by \code{\link{SimFish}()}.
+An internal function called by \code{\link{SimFish}}.
 }
 \seealso{
-\code{\link{SimFish}}, \code{\link{dfromx}()}, \code{\link{xfromz}()}.
+\code{\link{SimFish}}, \code{\link{dfromx}}, \code{\link{xfromz}}.
 }
 

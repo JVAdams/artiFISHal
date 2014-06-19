@@ -58,7 +58,7 @@
 #' 		}
 #' 	\item \code{FishInfo}, a list with the fish inputs supplied as arguments to \code{SimFish};
 #' 	\item \code{FishParam}, the data frame supplied as an argument to \code{SimFish};
-#' 	\item \code{FishPop}, a data frame in which each row is a fish, and 10 columns describe the fish group (\code{g}), location 
+#' 	\item \code{FishPop}, a data frame in which each row is a fish, and 10 columns describe the fish group (\code{G}), location 
 #' (easting \code{f.east}, northing \code{f.north}, distance to shore \code{f.d2sh}, bottom depth \code{f.botdep}, 
 #' water depth \code{f.wdep}, distance to bottom \code{f.d2bot}, all in m), and 
 #' fish size (total length in mm \code{len}, weight in g \code{wt}, and target strength in db \code{ts}); and
@@ -79,7 +79,7 @@
 #'
 #' You may wish to cap the total number of fish at 5 million if your computer has a memory of about 2 GB (2047 MB).  
 #' This limit can be increased if you have more memory available in R.
-#' You can check the memory available with \code{\link{memory.limit}()}.
+#' You can check the memory available with \code{\link{memory.limit}}.
 #'
 #' The diagnostic plots produced, if \code{PlotsPdf} is not FALSE, include 
 #' scatterplots of 1,000 fish randomly selected from the population, scatterplots of 250 fish randomly selected from each group, 
@@ -87,6 +87,7 @@
 #'
 #' @export
 #' @import 				MASS
+#' @seealso \code{\link{SampFish}}
 #' @references Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.  
 #' \href{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}{Evaluating 
 #' analytical approaches for estimating pelagic fish biomass using simulated fish communities}. 
@@ -107,7 +108,7 @@
 #' 
 #' # simulate the fish population
 #' res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000, BotDepMin=20, BotDepMax=100, 
-#' 	FishParam=fishp, TotNFish=1000)
+#' 	FishParam=fishp, TotNFish=1000, Seed=667)
 #'
 #' # look at the results
 #' res$Truth
@@ -164,7 +165,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 
 	attach(FishParam)
 
-	fish <- data.frame(g=rep(G, Nfish), f.east=NA, f.north=NA, f.d2sh=NA, f.botdep=NA, f.wdep=NA, f.d2bot=NA, len=NA, wt=NA, ts=NA)
+	fish <- data.frame(G=rep(G, Nfish), f.east=NA, f.north=NA, f.d2sh=NA, f.botdep=NA, f.wdep=NA, f.d2bot=NA, len=NA, wt=NA, ts=NA)
 	if(!is.null(Seed)) set.seed(Seed)
 	for(i in seq(nrowz)) {
 
@@ -239,46 +240,44 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		n <- dim(fish)[1]
 		pick <- if(n<1001) 1:n else sample(1:n, 1000)
 		attach(fish[pick, ])
-		sug <- sort(unique(g))
+		sug <- sort(unique(G))
 
 		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-		plot(f.east/1000, -f.wdep, type="n", xlim=eastr/1000, ylim=c(-BotDepMax, 0), las=1, 
-			xlab="Easting  (km)", ylab="Water depth  (m)", main=paste(LakeName, "- Side View"))
+		plotblank(eastr/1000, c(-BotDepMax, 0), xlab="Easting  (km)", ylab="Water depth  (m)", main=paste(LakeName, "- Side View"))
 		lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints, slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000, 
 			-c(botdepr[1], rep(BotDepMax, 2), botdepr[1], 0, 0, botdepr[1]))
 
 		for(i in seq(along=sug)) {
-			sel <- g==sug[i]
-			text(f.east[sel]/1000, -f.wdep[sel], g[sel], col=i)
+			sel <- G==sug[i]
+			text(f.east[sel]/1000, -f.wdep[sel], G[sel], col=i)
 			}
 
 		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-		plot(f.east/1000, f.north/1000, type="n", xlim=eastr/1000, ylim=northr/1000, las=1, 
-			xlab="Easting  (km)", ylab="Northing  (km)", main=paste(LakeName, "- Top View"))
+		plotblank(eastr/1000, northr/1000, xlab="Easting  (km)", ylab="Northing  (km)", main=paste(LakeName, "- Top View"))
 		for(i in seq(along=sug)) {
-			sel <- g==sug[i]
-			text(f.east[sel]/1000, f.north[sel]/1000, g[sel], col=i)
+			sel <- G==sug[i]
+			text(f.east[sel]/1000, f.north[sel]/1000, G[sel], col=i)
 			}
 
 		detach(fish[pick, ])
 
 		# a random selection of 250 fish from each group
 
-		rows.g <- split(seq(along=fish$g), fish$g)
+		rows.g <- split(seq(along=fish$G), fish$G)
 		pick <- unlist(lapply(rows.g, function(x) sample(x, min(250, length(x)))))
 		attach(fish[pick, ])
-		sug <- sort(unique(g))
+		sug <- sort(unique(G))
 
 		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
-			sel <- g==sug[i]
-			plot(f.east/1000, -f.wdep, type="n", xlim=eastr/1000, ylim=c(-BotDepMax, 0), las=1, xlab="", ylab="")
+			sel <- G==sug[i]
+			plotblank(eastr/1000, c(-BotDepMax, 0))
 			lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints, slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000, 
 				-c(botdepr[1], rep(BotDepMax, 2), botdepr[1], 0, 0, botdepr[1]))
-			text(f.east[sel]/1000, -f.wdep[sel], g[sel], col=i)
+			text(f.east[sel]/1000, -f.wdep[sel], G[sel], col=i)
 			}
 		mtext("Easting  (km)", side=1, outer=TRUE)
 		mtext("Water depth  (m)", side=2, outer=TRUE)
@@ -287,9 +286,9 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
-			sel <- g==sug[i]
-			plot(f.east/1000, f.north/1000, type="n", xlim=eastr/1000, ylim=northr/1000, las=1, xlab="", ylab="")
-			text(f.east[sel]/1000, f.north[sel]/1000, g[sel], col=i)
+			sel <- G==sug[i]
+			plotblank(eastr/1000, northr/1000)
+			text(f.east[sel]/1000, f.north[sel]/1000, G[sel], col=i)
 			}
 		mtext("Easting  (km)", side=1, outer=TRUE)
 		mtext("Northing  (km)", side=2, outer=TRUE)
@@ -297,26 +296,24 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 
 		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-		plot(len, -f.wdep, type="n", las=1, xlab="Fish length  (mm)", ylab="Water depth  (m)", 
-			main=paste(LakeName, "- Size at Depth"))
+		plotblank(len, -f.wdep, xlab="Fish length  (mm)", ylab="Water depth  (m)", main=paste(LakeName, "- Size at Depth"))
 		for(i in seq(along=sug)) {
-			sel <- g==sug[i]
-			text(len[sel], -f.wdep[sel], g[sel], col=i)
+			sel <- G==sug[i]
+			text(len[sel], -f.wdep[sel], G[sel], col=i)
 			}
 
 		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-		plot(ts, -f.wdep, type="n", las=1, xlab="Target strength  (dB)", ylab="Water depth  (m)", 
-			main=paste(LakeName, "- Size at Depth"))
+		plotblank(ts, -f.wdep, xlab="Target strength  (dB)", ylab="Water depth  (m)", main=paste(LakeName, "- Size at Depth"))
 		for(i in seq(along=sug)) {
-			sel <- g==sug[i]
-			text(ts[sel], -f.wdep[sel], g[sel], col=i)
+			sel <- G==sug[i]
+			text(ts[sel], -f.wdep[sel], G[sel], col=i)
 			}
 
 		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
-			sel <- g==sug[i]
+			sel <- G==sug[i]
 			plot(len[sel], wt[sel], las=1, xlab="", ylab="")
 			mtext(sug[i], side=3, adj=0.1, line=-2, font=2)
 			}
@@ -332,7 +329,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 			if(is.na(PlotsPdf)) windows(w=9, h=6.5)
 			par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 			for(i in seq(along=sug)) {
-				sel <- g==sug[i]
+				sel <- G==sug[i]
 				hist(x[sel], nclass=25, col="gray", las=1, xlab="", ylab="", main="", ...)
 				box()
 				mtext(sug[i], side=3, adj=0.9, line=-2, font=2)
@@ -344,7 +341,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 
 		attach(fish)
 
-		sug <- sort(unique(g))
+		sug <- sort(unique(G))
 		fishhist(len, "Length  (mm)", "Length Distribution")
 		fishhist(wt, "Weight  (g)", "Weight Distribution")
 		fishhist(ts, "Target strength  (dB)", "TS Distribution")
@@ -362,7 +359,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		}
 
 	# total number and weight of each species in population
-	truth <- cbind(n=table(fish$g), kg=tapply(fish$wt, fish$g, sum)/1000)
+	truth <- cbind(n=table(fish$G), kg=tapply(fish$wt, fish$G, sum)/1000)
 	truth <- as.data.frame(rbind(truth, Total=apply(truth, 2, sum, na.rm=TRUE)))
 
 	LkArea <- LkWidth * LkLength / 10000

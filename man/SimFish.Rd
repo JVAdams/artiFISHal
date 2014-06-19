@@ -76,7 +76,7 @@ which are used by \code{\link{SampFish}} in surveying the population,
 		}
 	\item \code{FishInfo}, a list with the fish inputs supplied as arguments to \code{SimFish};
 	\item \code{FishParam}, the data frame supplied as an argument to \code{SimFish};
-	\item \code{FishPop}, a data frame in which each row is a fish, and 10 columns describe the fish group (\code{g}), location
+	\item \code{FishPop}, a data frame in which each row is a fish, and 10 columns describe the fish group (\code{G}), location
 (easting \code{f.east}, northing \code{f.north}, distance to shore \code{f.d2sh}, bottom depth \code{f.botdep},
 water depth \code{f.wdep}, distance to bottom \code{f.d2bot}, all in m), and
 fish size (total length in mm \code{len}, weight in g \code{wt}, and target strength in db \code{ts}); and
@@ -99,7 +99,7 @@ View the top and side views of the artificial lake in this \href{https://raw.git
 
 You may wish to cap the total number of fish at 5 million if your computer has a memory of about 2 GB (2047 MB).
 This limit can be increased if you have more memory available in R.
-You can check the memory available with \code{\link{memory.limit}()}.
+You can check the memory available with \code{\link{memory.limit}}.
 
 The diagnostic plots produced, if \code{PlotsPdf} is not FALSE, include
 scatterplots of 1,000 fish randomly selected from the population, scatterplots of 250 fish randomly selected from each group,
@@ -120,7 +120,7 @@ fishp <- data.frame(
 
 # simulate the fish population
 res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000, BotDepMin=20, BotDepMax=100,
-	FishParam=fishp, TotNFish=1000)
+	FishParam=fishp, TotNFish=1000, Seed=667)
 
 # look at the results
 res$Truth
@@ -135,5 +135,8 @@ Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, an
 \href{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}{Evaluating
 analytical approaches for estimating pelagic fish biomass using simulated fish communities}.
 Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.
+}
+\seealso{
+\code{\link{SampFish}}
 }
 

@@ -23,10 +23,10 @@ A numeric vector, same length as \code{x}, with distances to bottom for each eas
 Determine the easting from a given distance to lake bottom, incorporating random assignment to west or east shore if not specified.
 }
 \details{
-An internal function called by \code{\link{SimFish}()}.
+An internal function called by \code{\link{SimFish}}.
 }
 \seealso{
-\code{\link{SimFish}}, \code{\link{dfromx}()}, \code{\link{zfromx}()}.
+\code{\link{SimFish}}, \code{\link{dfromx}}, \code{\link{zfromx}}.
 The assignment to shore is necessary because the artificial lake will have two eastings for each bottom depth (except for the depth at the vertex).
 }
 

@@ -8,8 +8,8 @@
 #' @param shore 	A numeric or character scalar, indicating if the shore should be west (0), east (1) or randomly assigned ("random", default).
 #' @return 			A numeric vector, same length as \code{x}, with distances to bottom for each easting provided (in m).
 #' @export
-#' @details			An internal function called by \code{\link{SimFish}()}.
-#' @seealso			\code{\link{SimFish}}, \code{\link{dfromx}()}, \code{\link{zfromx}()}.
+#' @details			An internal function called by \code{\link{SimFish}}.
+#' @seealso			\code{\link{SimFish}}, \code{\link{dfromx}}, \code{\link{zfromx}}.
 #' The assignment to shore is necessary because the artificial lake will have two eastings for each bottom depth (except for the depth at the vertex).
 
 xfromz <- function(z, maxz, ints, slopes, shore="random") {

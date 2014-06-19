@@ -19,9 +19,9 @@ A numeric vector, same length as \code{x}, with distances to shore (west or east
 Determine the distance to the lake shore from a given easting.
 }
 \details{
-An internal function called by \code{\link{SimFish}()}.
+An internal function called by \code{\link{SimFish}}.
 }
 \seealso{
-\code{\link{SimFish}}, \code{\link{zfromx}()}, \code{\link{xfromz}()}.
+\code{\link{SimFish}}, \code{\link{zfromx}}, \code{\link{xfromz}}.
 }
 
