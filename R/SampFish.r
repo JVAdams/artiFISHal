@@ -98,22 +98,20 @@
 
 SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle, MtNum, MtHt, MtWd, MtLen, MtMinCat=2, MtMulti=6, PlotsPdf=NA, Seed=NULL) {
 
-
-
-	SimPop=res
-	NumEvents=2
-	AcNum=3
-	AcInterval=3000
-	AcLayer=10
-	AcAngle=7
-	MtNum=6
-	MtHt=10
-	MtWd=10
-	MtLen=200
-	MtMinCat=2
-	MtMulti=6
-	PlotsPdf=NA
-	Seed=545
+	# SimPop=res
+	# NumEvents=2
+	# AcNum=3
+	# AcInterval=3000
+	# AcLayer=10
+	# AcAngle=7
+	# MtNum=6
+	# MtHt=10
+	# MtWd=10
+	# MtLen=200
+	# MtMinCat=2
+	# MtMulti=6
+	# PlotsPdf=NA
+	# Seed=545
 
 	if(!is.na(PlotsPdf) & PlotsPdf!=FALSE) pdf(PlotsPdf, width=9, height=6.5, title="Survey", paper="USr")
 
