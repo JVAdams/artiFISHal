@@ -367,17 +367,18 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle, M
 			barz <- barz[apply(barz, 1, sum)>0, , , drop=FALSE]
 			sus <- dimnames(barz)[[1]]
 			if(is.na(PlotsPdf)) windows(w=9, h=6.5)
-			par(mfrow=n2mfrow(length(sut)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
+			par(mfrow=rev(n2mfrow(length(sut)+1)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 			for(m in seq(along=sut)) {
 				barplot(barz[, , m], ylim=c(0, max(apply(barz, 2:3, sum))), col=1:50, 
 					names.arg=paste(dimnames(barz)[[2]], "+", sep=""), las=1)
 				mtext(paste("id=", sut[m], "\nn=", sum(barz[, , m]), sep=""), side=3, line=-2.5, adj=0.98, font=2, cex=par("cex"))
 				box()
 				}
+			plotblank(axes=FALSE)
+			legend("center", sus, fill=seq(sus), title="Group")
 			mtext("Length  (mm)", side=1, outer=TRUE)
 			mtext("Frequency", side=2, outer=TRUE)
 			mtext(paste(SimPop$LakeInfo$LakeName, "- Midwater Trawl Catch"), side=3, outer=TRUE, font=2)
-			legend("topleft", sus, fill=seq(sus))
 			rm(barz, sus)
 			}
 

@@ -29,7 +29,7 @@ Visualization of midwater trawl selectivity curves based on parameters used in \
 selec <- data.frame(
 	G = c("A", "a", "A", "a", "A", "a"),
 	Zone = c("mouth", "mouth", "middle", "middle", "aft", "aft"),
-	MtL50Small = c(100, 100, 60, 60, 30, 30),
+	MtL50Small = c(100, 90, 60, 50, 30, 2),
 	MtSlopeSmall = c(40, 40, 30, 30, 20, 20),
 	MtL50Large = c(180, 180, Inf, Inf, Inf, Inf),
 	MtSlopeLarge = c(20, 20, 100, 100, 100, 100))
