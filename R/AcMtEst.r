@@ -97,9 +97,9 @@ AcMtEst <- function(SimPop, AcMtSurv, PanelProps=c(0.4, 0.3, 0.2, 0.1), SelecPar
 # Seed=245
 
 	if(!is.null(Seed)) set.seed(Seed)
-	mtr <- surv$MtCatch
-	srv <- surv$SurvParam
-	ac <- surv$Targets
+	mtr <- AcMtSurv$MtCatch
+	srv <- AcMtSurv$SurvParam
+	ac <- AcMtSurv$Targets
 
 	# check validity of the trawl zone proportions that were input
 	names(PanelProps) <- c("mouth", "middle", "aft", "cod")
@@ -196,7 +196,7 @@ AcMtEst <- function(SimPop, AcMtSurv, PanelProps=c(0.4, 0.3, 0.2, 0.1), SelecPar
 			pred.props <- predict(treek, newdata=ack)
 			dens.eail <- ack$nperha*pred.props
 			dens.eai <- aggregate(dens.eail, ack[, c("ACid", "interval")], sum)
-			dens.e <- apply(dens.eai[, sug], 2, mean)
+			dens.e <- apply(dens.eai[, names(dens.eai) %in% sug], 2, mean)
 
 			# mean biomass for each species
 			# calculate the mean weight of each group at each node of the fitted tree
@@ -210,7 +210,7 @@ AcMtEst <- function(SimPop, AcMtSurv, PanelProps=c(0.4, 0.3, 0.2, 0.1), SelecPar
 			mwt.eail <- mwt[match(pred.node, row.names(mwt)), ]
 			bio.eail <- mwt.eail * dens.eail
 			bio.eai <- aggregate(bio.eail, ack[, c("ACid", "interval")], sum)
-			bio.e <- apply(bio.eai[, sug], 2, mean)
+			bio.e <- apply(bio.eai[, names(bio.eai) %in% sug], 2, mean)
 
 			for(g in seq(sug)) {
 				sel <- results$Event==k & results$G==sug[g]
@@ -223,5 +223,4 @@ AcMtEst <- function(SimPop, AcMtSurv, PanelProps=c(0.4, 0.3, 0.2, 0.1), SelecPar
 	results$nperha[is.na(results$nperha)] <- 0
 	results$kgperha[is.na(results$kgperha)] <- 0
 	results[, c("Event", "G", "nperha", "kgperha")]
-#	write.csv(results, paste0(subdir, "/ResultsSummary-lake", sel.lk, "-run", sel.run, ".csv"), row.names=FALSE)
 	}

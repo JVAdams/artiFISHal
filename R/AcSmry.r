@@ -57,9 +57,9 @@
 #'
 AcSmry <- function(AcTarg, LakeInfo, SurvParam) {
 
-	AcTarg=surv$Targets
-	LakeInfo=res$LakeInfo
-	SurvParam=surv$SurvParam
+	# AcTarg=surv$Targets
+	# LakeInfo=res$LakeInfo
+	# SurvParam=surv$SurvParam
 
 	# add "range weight" to the AcTarg data (Yule 2000)
 	# a weighting variable to account for different volumes sampled as a function of range (dist. from ducer in m) and ducer half angle
