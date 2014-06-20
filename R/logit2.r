@@ -3,9 +3,9 @@
 #' Probability distribution function of double logistic curve, with ascending an descending limbs allowing for parabolic-shaped probabilities.
 #'
 #' @param x	 		A numeric vector.
-#' @param x50a 		A numeric scalar, the quantile at which small values of x have a 50% probability, the first "location" parameter.
+#' @param x50a 		A numeric scalar, the quantile at which small values of x have a 50\% probability, the first "location" parameter.
 #' @param slopea 	A numeric scalar, the slope at which the probability for small values of x increases, the first "scale" parameter.
-#' @param x50b 		A numeric scalar, the quantile at which large values of x have a 50% probability, the second "location" parameter.
+#' @param x50b 		A numeric scalar, the quantile at which large values of x have a 50\% probability, the second "location" parameter.
 #' @param slopeb 	A numeric scalar, the slope at which the probability for large values of x decreases, the second "scale" parameter.
 #'
 #' @details			The double logistic function mimics the single logistic function if either of the location paramters are set

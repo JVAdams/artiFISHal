@@ -5,16 +5,16 @@
 #' @param SelecParam	A data frame with 6 columns in which each row provides the midwater trawl selectivity parameters for
 #' a given fish group and mesh panel zone.
 #' All columns must be completely filled in (no missing values).
-#' Selectivity is assumed to be 100% for any group-zone combination not represented as a row in the data frame.
-#' For 100% selectivity of small fish, use MtL50Small = -Inf and any slope.  
-#' For 100% selectivity of large fish, use MtL50Large = Inf and any slope. 
+#' Selectivity is assumed to be 100\% for any group-zone combination not represented as a row in the data frame.
+#' For 100\% selectivity of small fish, use MtL50Small = -Inf and any slope.  
+#' For 100\% selectivity of large fish, use MtL50Large = Inf and any slope. 
 #' Column names and descriptions:
 #' \itemize{
 #'   \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and lifestage) used in plotting
 #'   \item \code{Zone} = character, mesh panel zone, one of "mouth", "middle", "aft", or "cod"
-#'   \item \code{MtL50Small} = the length (in mm) at which small fish have a 50% probability of being captured by the trawl
+#'   \item \code{MtL50Small} = the length (in mm) at which small fish have a 50\% probability of being captured by the trawl
 #'   \item \code{MtSlopeSmall} = the (inverse) slope at which small fish probability of capture increases with length, smaller values are steeper
-#'   \item \code{MtL50Large} = the length (in mm) at which large fish have a 50% probability of being captured by the trawl
+#'   \item \code{MtL50Large} = the length (in mm) at which large fish have a 50\% probability of being captured by the trawl
 #'   \item \code{MtSlopeLarge} = the (absolute value of the inverse) slope at which large fish probability of capture decreases with length, smaller values are steeper
 #' }
 #'

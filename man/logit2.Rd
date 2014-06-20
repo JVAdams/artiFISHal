@@ -8,11 +8,11 @@ logit2(x, x50a, slopea, x50b, slopeb)
 \arguments{
 \item{x}{A numeric vector.}
 
-\item{x50a}{A numeric scalar, the quantile at which small values of x have a 50% probability, the first "location" parameter.}
+\item{x50a}{A numeric scalar, the quantile at which small values of x have a 50\% probability, the first "location" parameter.}
 
 \item{slopea}{A numeric scalar, the slope at which the probability for small values of x increases, the first "scale" parameter.}
 
-\item{x50b}{A numeric scalar, the quantile at which large values of x have a 50% probability, the second "location" parameter.}
+\item{x50b}{A numeric scalar, the quantile at which large values of x have a 50\% probability, the second "location" parameter.}
 
 \item{slopeb}{A numeric scalar, the slope at which the probability for large values of x decreases, the second "scale" parameter.}
 }

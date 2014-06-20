@@ -7,9 +7,9 @@
 #' Interactive sliders are provided for the four parameters of interest which are required for defining the midwater trawl selectivity
 #' of the mesh panel zones as a double logistic curve:
 #' \itemize{
-#'   \item \code{MtL50Small} the length (in mm) at which small fish have a 50% probability of being captured by the trawl
+#'   \item \code{MtL50Small} the length (in mm) at which small fish have a 50\% probability of being captured by the trawl
 #'   \item \code{MtSlopeSmall} the slope at which small fish probability of capture increases with length
-#'   \item \code{MtL50Large} the length (in mm) at which large fish have a 50% probability of being captured by the trawl
+#'   \item \code{MtL50Large} the length (in mm) at which large fish have a 50\% probability of being captured by the trawl
 #'   \item \code{MtSlopeLarge} the (absolute value of the) slope at which large fish probability of capture decreases with length
 #'	}
 #'

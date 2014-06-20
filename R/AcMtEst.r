@@ -10,26 +10,26 @@
 #' @param SelecParam	A data frame with 6 columns in which each row provides the midwater trawl selectivity parameters for
 #' a given fish group and mesh panel zone.
 #' All columns must be completely filled in (no missing values).
-#' Selectivity is assumed to be 100% for any group-zone combination not represented as a row in the data frame.
-#' For 100% selectivity of small fish, use MtL50Small = -Inf and any slope.  
-#' For 100% selectivity of large fish, use MtL50Large = Inf and any slope. 
+#' Selectivity is assumed to be 100\% for any group-zone combination not represented as a row in the data frame.
+#' For 100\% selectivity of small fish, use \code{MtL50Small = -Inf} and any slope.  
+#' For 100\% selectivity of large fish, use \code{MtL50Large = Inf} and any slope. 
 #' Column names and descriptions:
 #' \itemize{
 #'   \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and lifestage) used in plotting
 #'   \item \code{Zone} = character, mesh panel zone, one of "mouth", "middle", "aft", or "cod"
-#'   \item \code{MtL50Small} = the length (in mm) at which small fish have a 50% probability of being captured by the trawl
-#'   \item \code{MtSlopeSmall} = the (inverse) slope at which small fish probability of capture increases with length, smaller values are steeper
-#'   \item \code{MtL50Large} = the length (in mm) at which large fish have a 50% probability of being captured by the trawl
-#'   \item \code{MtSlopeLarge} = the (absolute value of the inverse) slope at which large fish probability of capture decreases with length, smaller values are steeper
+#'   \item \code{MtL50Small} = numeric, the length (in mm) at which small fish have a 50\% probability of being captured by the trawl
+#'   \item \code{MtSlopeSmall} = numeric, the (inverse) slope at which small fish probability of capture increases with length, smaller values are steeper
+#'   \item \code{MtL50Large} = numeric, the length (in mm) at which large fish have a 50\% probability of being captured by the trawl
+#'   \item \code{MtSlopeLarge} = numeric, the (absolute value of the inverse) slope at which large fish probability of capture decreases with length, smaller values are steeper
 #' }
 #' @param PanelProps 	A numeric vector of length 4, size of the different mesh panel zones of the midwater trawl, 
 #' mouth (outermost), middle, aft, and cod (inner), default c(0.4, 0.3, 0.2, 0.1).
 #' Sizes are expressed as proportions of the distance from the outer edge of the trawl to the trawl center in both the vertical and horizontal directions,
 #' and they should add up to 1.  Use \code{\link{ViewZones}} to visualize the mesh panel zones.
 #' @param AcExcl		A numeric vector of length 2, depth of acoustic "dead" zones at the surface and at the bottom (in m), 
-#' default of c(0, 0) represents 100% acoustic availability of fish.
+#' default of c(0, 0) represents 100\% acoustic availability of fish.
 #' @param MtExcl		A numeric vector of length 2, depth of zones unfishable with the midwater trawl at the surface and at the bottom (in m), 
-#' default of c(0, 0) represents 100% midwater trawl availability of fish.
+#' default of c(0, 0) represents 100\% midwater trawl availability of fish.
 #' @param Seed			An integer scalar, starting seed for stochasticity incorporated in acoustic and midwater trawl catchability.  
 #' Use \code{Seed} to ensure the same individual fish are included in the surveys with each call to \code{CatchComb}.  
 #' Otherwise, if set to NULL, the default, a random seed is used, resulting in a different fish selection with each call to \code{CatchComb}.  
