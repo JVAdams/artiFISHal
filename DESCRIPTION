@@ -11,11 +11,13 @@ Depends:
 Imports:
     MASS,
     plotrix,
-    rpanel
+    rpanel,
+	rpart
 Description: artiFISHal allows you to simulate and sample a population of fish.
     Use it to create an artificial lake and populate it with known numbers of
     fish (identified in species-size groups) to mimic pelagic fish communities.
     Then, sample the fish population with virtual acoustic and midwater trawl
     surveys.
+LazyData: TRUE
 License: GPL
 URL: https://github.com/JVAdams/artiFISHal
