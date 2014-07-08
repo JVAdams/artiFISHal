@@ -242,7 +242,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		attach(fish[pick, ])
 		sug <- sort(unique(G))
 
-		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
 		plotblank(eastr/1000, c(-BotDepMax, 0), xlab="Easting  (km)", ylab="Water depth  (m)", main=paste(LakeName, "- Side View"))
 		lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints, slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000, 
@@ -253,7 +253,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 			text(f.east[sel]/1000, -f.wdep[sel], G[sel], col=i)
 			}
 
-		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
 		plotblank(eastr/1000, northr/1000, xlab="Easting  (km)", ylab="Northing  (km)", main=paste(LakeName, "- Top View"))
 		for(i in seq(along=sug)) {
@@ -270,7 +270,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		attach(fish[pick, ])
 		sug <- sort(unique(G))
 
-		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
 			sel <- G==sug[i]
@@ -283,7 +283,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		mtext("Water depth  (m)", side=2, outer=TRUE)
 		mtext(paste(LakeName, "- Side View"), side=3, outer=TRUE, font=2)
 
-		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
 			sel <- G==sug[i]
@@ -294,7 +294,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		mtext("Northing  (km)", side=2, outer=TRUE)
 		mtext(paste(LakeName, "- Top View"), side=3, outer=TRUE, font=2)
 
-		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
 		plotblank(len, -f.wdep, xlab="Fish length  (mm)", ylab="Water depth  (m)", main=paste(LakeName, "- Size at Depth"))
 		for(i in seq(along=sug)) {
@@ -302,7 +302,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 			text(len[sel], -f.wdep[sel], G[sel], col=i)
 			}
 
-		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
 		plotblank(ts, -f.wdep, xlab="Target strength  (dB)", ylab="Water depth  (m)", main=paste(LakeName, "- Size at Depth"))
 		for(i in seq(along=sug)) {
@@ -310,7 +310,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 			text(ts[sel], -f.wdep[sel], G[sel], col=i)
 			}
 
-		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
 			sel <- G==sug[i]
@@ -326,7 +326,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		# histograms of all fish
 
 		fishhist <- function(x, xlab, title, ...) {
-			if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+			if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 			par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 			for(i in seq(along=sug)) {
 				sel <- G==sug[i]

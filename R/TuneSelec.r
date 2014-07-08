@@ -39,9 +39,12 @@ TuneSelec <- function() {
 		}
 
 	# plot it, with a slider to adjust coeficients of the double logistic function
-	windows()
+	dev.new()
 	par(mar=c(4, 4, 1, 1))
+	plot(1, 1)
 	panel <- rp.control(x=1:2000, L501=10.1, SR1=10.1, L502=200.1, SR2=20.1)
+	# draw an initial plot, so user isn't staring at a gray window before clicking on the slider
+	double.draw(panel)
 	rp.slider(panel, L501, 0.1, 1000, resolution=0.1, showvalue=T, action=double.draw, 
 		title="MtL50Small:   length at 50% for small fish                                                                                                                 ")
 	rp.slider(panel, SR1, 0.1, 200, resolution=0.1, showvalue=T, action=double.draw, title="MtSlopeSmall:   slope for small fish")

@@ -62,7 +62,7 @@ ViewSelec <- function(SelecParam) {
 
 	x <- floor(min(both$left[is.finite(both$left)], na.rm=TRUE)):ceiling(max(both$right[is.finite(both$right)], na.rm=TRUE))
 
-	windows()
+	dev.new()
 	par(mfrow=c(2, 2), mar=c(3, 3, 2, 1), oma=c(2, 2, 0, 0))
 	for(z in 1:length(suz)) {
 		sel <- both$Zone==suz[z]

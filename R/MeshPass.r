@@ -57,7 +57,7 @@ MeshPass <- function(BarMesh, H2WRatio, L2HRatio=NA, Plot=TRUE) {
 			title1 <- paste0('Fish height = ', signif(fheight, 3), '", length = ', signif(flength, 3), ' mm')
 			title2 <- paste0('Bar mesh = ', BarMesh, '", mesh ratio = ', signif(H2WRatio, 3), ', fish length/height = ', signif(L2HRatio, 3))
 			}
-		windows(rescale="fit")
+		dev.new(rescale="fit")
 		eqscplot(0, 0, type="n", xlim=c(-H, H), ylim=c(-W, W), las=1, xlab="Inches", ylab="Inches", main=title1)
 		addfish(r)
 		polygon(c(0, H, 0, -H), c(-W, 0, W, 0), lwd=2, density=0)

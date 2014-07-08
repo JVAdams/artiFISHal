@@ -314,7 +314,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle, M
 
 
 		# top view of acoustic transects and midwater trawls - to scale
-		if(is.na(PlotsPdf)) windows(w=9, h=6.5, rescale="fit")
+		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5, rescale="fit")
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
 		eqscplot(1, 1, type="n", xlim=eastr/1000, ylim=northr/1000, axes=FALSE, xlab="Easting  (km)", ylab="Northing  (km)", 
 			main=paste(SimPop$LakeInfo$LakeName, "- Top View - drawn to scale"))
@@ -333,7 +333,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle, M
 
 
 		# plot of each acoustic transect with outline of midwater trawl tows
-		if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sua)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		catch.tots <- table(MTR$MTRid)
 		for(j in seq(along=sua)) {
@@ -364,7 +364,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle, M
 			barz <- barz[, , dimnames(barz)[[3]] %in% sut, drop=FALSE]
 			barz <- barz[apply(barz, 1, sum)>0, , , drop=FALSE]
 			sus <- dimnames(barz)[[1]]
-			if(is.na(PlotsPdf)) windows(w=9, h=6.5)
+			if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 			par(mfrow=rev(n2mfrow(length(sut)+1)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 			for(m in seq(along=sut)) {
 				barplot(barz[, , m], ylim=c(0, max(apply(barz, 2:3, sum))), col=1:50, 

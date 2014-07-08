@@ -30,7 +30,7 @@ ViewZones <- function(PanelProp=c(0.4, 0.3, 0.2, 0.1)) {
 	aft.edge <- middle.edge - PanelProp[2]
 	cod.edge <- aft.edge - PanelProp[3]
 
-	windows(rescale="fit")
+	dev.new(rescale="fit")
 	par(mar=rep(0.1, 4), cex=2)
 	eqscplot(0, 0, xlim=c(-1, 1), ylim=c(-1, 1), type="n", axes=FALSE, xlab="", ylab="")
 	polygon(mouth.edge*c(-1, 1, 1, -1), mouth.edge*c(-1, -1, 1, 1), col=gray(0.4))
