@@ -3,8 +3,8 @@
 \alias{AcMtEst}
 \title{Combine Acoustic and Midwater Trawl Survey Data}
 \usage{
-AcMtEst(SimPop, AcMtSurv, PanelProps = c(0.4, 0.3, 0.2, 0.1),
-  SelecParam = NULL, AcExcl = c(0, 0), MtExcl = c(0, 0), Seed = NULL)
+AcMtEst(SimPop, AcMtSurv, AcExcl = c(0, 0), MtExcl = c(0, 0),
+  PanelProps = c(0.4, 0.3, 0.2, 0.1), SelecParam = NULL, Seed = NULL)
 }
 \arguments{
 \item{SimPop}{A list with elements \code{LakeInfo}, \code{FishInfo}, \code{FishParam}, \code{FishPop}, typically output from \code{\link{SimFish}}.
@@ -12,6 +12,17 @@ See \code{\link{SimFish}} for details on the list elements.}
 
 \item{AcMtSurv}{A list with elements \code{Targets}, \code{AcSummaryCell}, \code{AcSummaryColumn}, \code{MtCatch},
 typically output from \code{\link{SampFish}}.}
+
+\item{AcExcl}{A numeric vector of length 2, depth of acoustic "dead" zones at the surface and at the bottom (in m),
+default of c(0, 0) represents 100\% acoustic availability of fish.}
+
+\item{MtExcl}{A numeric vector of length 2, depth of zones unfishable with the midwater trawl at the surface and at the bottom (in m),
+default of c(0, 0) represents 100\% midwater trawl availability of fish.}
+
+\item{PanelProps}{A numeric vector of length 4, size of the different mesh panel zones of the midwater trawl,
+mouth (outermost), middle, aft, and cod (inner), default c(0.4, 0.3, 0.2, 0.1).
+Sizes are expressed as proportions of the distance from the outer edge of the trawl to the trawl center in both the vertical and horizontal directions,
+and they should add up to 1.  Use \code{\link{ViewZones}} to visualize the mesh panel zones.}
 
 \item{SelecParam}{A data frame with 6 columns in which each row provides the midwater trawl selectivity parameters for
 a given fish group and mesh panel zone.
@@ -28,17 +39,6 @@ Column names and descriptions:
   \item \code{MtL50Large} = numeric, the length (in mm) at which large fish have a 50\% probability of being captured by the trawl
   \item \code{MtSlopeLarge} = numeric, the (absolute value of the inverse) slope at which large fish probability of capture decreases with length, smaller values are steeper
 }}
-
-\item{PanelProps}{A numeric vector of length 4, size of the different mesh panel zones of the midwater trawl,
-mouth (outermost), middle, aft, and cod (inner), default c(0.4, 0.3, 0.2, 0.1).
-Sizes are expressed as proportions of the distance from the outer edge of the trawl to the trawl center in both the vertical and horizontal directions,
-and they should add up to 1.  Use \code{\link{ViewZones}} to visualize the mesh panel zones.}
-
-\item{AcExcl}{A numeric vector of length 2, depth of acoustic "dead" zones at the surface and at the bottom (in m),
-default of c(0, 0) represents 100\% acoustic availability of fish.}
-
-\item{MtExcl}{A numeric vector of length 2, depth of zones unfishable with the midwater trawl at the surface and at the bottom (in m),
-default of c(0, 0) represents 100\% midwater trawl availability of fish.}
 
 \item{Seed}{An integer scalar, starting seed for stochasticity incorporated in acoustic and midwater trawl catchability.
 Use \code{Seed} to ensure the same individual fish are included in the surveys with each call to \code{CatchComb}.
@@ -86,7 +86,7 @@ selec <- data.frame(
 	MtSlopeLarge = c(20, 20, 100, 100, 100, 100))
 
 AcMtEst(SimPop=res, AcMtSurv=surv, Seed=927)
-AcMtEst(SimPop=res, AcMtSurv=surv, SelecParam=selec, AcExcl=c(5, 10), MtExcl=c(2, 2), Seed=204)
+AcMtEst(SimPop=res, AcMtSurv=surv, AcExcl=c(5, 10), MtExcl=c(2, 2), SelecParam=selec, Seed=204)
 }
 \references{
 Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.
