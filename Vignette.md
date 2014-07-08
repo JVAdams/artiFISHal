@@ -114,6 +114,13 @@ You can get a fish's eye view of the panel sizes denoted using the `ViewZones` f
 	ViewZones(PanelProp = c(0.4, 0.3, 0.2, 0.1))
 
 The `SelecParam` argument is used to denote the mesh selectivity for each fish group (species, life stage) and trawl panel zone. 
+You can use the `MeshPass` function to determine the largest height (or depth) of a fish that can pass through a 
+single diamond-shaped mesh of a net, provided the size of the mesh `BarMesh`, 
+the height to width ratio of the mesh `H2WRatio`,
+and the length to height ratio of the fish `L2HRatio`.
+
+	MeshPass(BarMesh=2, H2WRatio=0.3, L2HRatio=4)
+
 A double logistic regression function is used to specify selectivity as a function of fish total length
 using two slopes and two inflection points. 
 If you have some notion of what the selectivity curve should look like, 
