@@ -14,7 +14,7 @@ You should be able to access the functions by installing them directly from with
 	devtools::install_github("JVAdams/artiFISHal")
 	library(artiFISHal)
 
-If you don't already have `Rtools` and `devtools`, you will need to download and install Rtools 3.1 from [CRAN](http://cran.r-project.org/bin/windows/Rtools/), 
+If you don't already have `Rtools` and `devtools`, you will need to download and install (as administrator, if using a PC) Rtools 3.1 from [CRAN](http://cran.r-project.org/bin/windows/Rtools/), 
 	the Comprehensive R Archive Network, then run the following lines of code before submitting the code above:
 
 	find_rtools()
