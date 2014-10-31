@@ -15,7 +15,7 @@
 #' 
 #' \emph{U.S. Geological Survey} (USGS) Computer Program \pkg{artiFISHal} version 2014-07.
 #' Written by Jean V. Adams, USGS - Great Lakes Science Center, Ann Arbor, Michigan, USA.
-#' Written in programming language R (R Core Team, 2013, www.R-project.org), version 3.1.1 (2014-07-10).
+#' Written in programming language R (R Core Team, 2014, www.R-project.org), version 3.1.1 (2014-07-10).
 #' Run on a PC with Intel(R) Core(TM) I7-4600m CPU, 2.90 GHz processor, 16.0 GB RAM, and 
 #' Microsoft Windows 7 Enterprise operating system 2009 Service Pack 1.
 #' Source code is available from Jean V. Adams on \href{https://github.com/JVAdams/artiFISHal}{GitHub}, \email{jvadams@@usgs.gov}.
