@@ -7,6 +7,10 @@ which can be used to create artificial lakes and populate them with known number
 
 [Yule et al. (2013)](http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ) used **artiFISHal** 
 to evaluate several different approaches for estimating the biomass of pelagic fish species in the Great Lakes.
+An example of how to use the functions in **artiFISHal** is given in this 
+[vignette](https://github.com/JVAdams/artiFISHal/blob/master/Vignette.md).
+
+- - -
 
 You should be able to access the functions by installing them directly from within R.
 
@@ -14,22 +18,21 @@ You should be able to access the functions by installing them directly from with
 	devtools::install_github("JVAdams/artiFISHal")
 	library(artiFISHal)
 
-If you don't already have `Rtools` and `devtools`, you will need to download and install (as administrator, if using a PC) Rtools from 
-[CRAN](http://cran.r-project.org/bin/windows/Rtools/), 
-the Comprehensive R Archive Network, then run the following lines of code before submitting the code above:
+If you don't already have `Rtools` and `devtools`, you will need to download and install (as administrator, if using a PC) `Rtools` from 
+[CRAN](http://cran.r-project.org/bin/windows/Rtools/) then run the following lines of code before submitting the code above:
 
 	find_rtools()
 	install.packages("devtools")
 
-An example of how to use the functions in **artiFISHal** is given in this 
-[vignette](https://github.com/JVAdams/artiFISHal/blob/master/Vignette.md).
+- - -
 
 _Thanks to Hilary Parker whose blog post 
 [Writing an R package from scratch](http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/)
 encouraged me to create my first R package._
 
 - - -
-*NOTE:  If you are looking for the GITHUB repository that used to be at this location,
-look at the [GLAUG2014](https://github.com/JVAdams/GLAUG2014) repository instead.
-I moved all of the files there that were used in the Great Lakes Acoustic Users Group 2014 Workshop on Trawl Performance.*
+
+*NOTE:  If you are looking for files that were used in the Great Lakes Acoustic Users Group 2014 Workshop on Trawl Performance,
+they are now located at the [GLAUG2014](https://github.com/JVAdams/GLAUG2014) repository instead.
+
 - - -
