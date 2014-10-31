@@ -14,13 +14,18 @@ You should be able to access the functions by installing them directly from with
 	devtools::install_github("JVAdams/artiFISHal")
 	library(artiFISHal)
 
-If you don't already have `Rtools` and `devtools`, you will need to download and install (as administrator, if using a PC) Rtools 3.1 from [CRAN](http://cran.r-project.org/bin/windows/Rtools/), 
-	the Comprehensive R Archive Network, then run the following lines of code before submitting the code above:
+If you don't already have `Rtools` and `devtools`, you will need to download and install (as administrator, if using a PC) Rtools from 
+[CRAN](http://cran.r-project.org/bin/windows/Rtools/), 
+the Comprehensive R Archive Network, then run the following lines of code before submitting the code above:
 
 	find_rtools()
 	install.packages("devtools")
 
-_Thanks to Hilary Parker whose blog post [Writing an R package from scratch](http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/)
+An example of how to use the functions in **artiFISHal** is given in this 
+[vignette](https://github.com/JVAdams/artiFISHal/blob/master/Vignette.md).
+
+_Thanks to Hilary Parker whose blog post 
+[Writing an R package from scratch](http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/)
 encouraged me to create my first R package._
 
 - - -
