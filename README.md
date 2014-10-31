@@ -37,11 +37,11 @@ encouraged me to create my first R package._
 
 - - -
 
-_U.S. Geological Survey_ (USGS) Computer Program artiFISHal version 2014-07. 
-Written by Jean V. Adams, USGS - Great Lakes Science Center, Ann Arbor, Michigan, USA. 
+_U.S. Geological Survey_ (USGS) Computer Program **artiFISHal** version 2014-07. 
+Written by Jean V. Adams, [USGS - Great Lakes Science Center](http://www.glsc.usgs.gov/), Ann Arbor, Michigan, USA. 
 Written in programming language R (R Core Team, 2014, www.R-project.org), version 3.1.1 (2014-07-10). 
 Run on a PC with Intel(R) Core(TM) I7-4600m CPU, 2.90 GHz processor, 16.0 GB RAM, and Microsoft Windows 7 Enterprise operating system 2009 Service Pack 1. 
-Source code is available from Jean V. Adams on [GitHub](https://github.com/JVAdams/artiFISHal), <jvadams> (at) <usgs> (dot) <gov>.
+Source code is available from Jean V. Adams on [GitHub](https://github.com/JVAdams/artiFISHal), _jvadams (at) usgs (dot) gov_.
 
 _Disclaimer:_ Although this program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the United States Government 
 as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, 
