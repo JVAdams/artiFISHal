@@ -24,7 +24,7 @@ Written by Jean V. Adams, \href{http://www.glsc.usgs.gov/}{USGS - Great Lakes Sc
 Written in programming language R (R Core Team, 2014, www.R-project.org), version 3.1.1 (2014-07-10).
 Run on a PC with Intel(R) Core(TM) I7-4600m CPU, 2.90 GHz processor, 16.0 GB RAM, and
 Microsoft Windows 7 Enterprise operating system 2009 Service Pack 1.
-Source code is available from Jean V. Adams on \href{https://github.com/JVAdams/artiFISHal}{GitHub}, \email{jvadams@usgs.gov}.
+Source code is available from Jean V. Adams on \href{https://github.com/JVAdams/artiFISHal}{GitHub}, _jvadams (at) usgs (dot) gov_.
 
 \emph{Disclaimer:}  Although this program has been used by the USGS, no warranty, expressed or implied, is
 made by the USGS or the United States Government as to the accuracy and functioning of
