@@ -20,13 +20,15 @@
 #' @seealso \code{\link{AcMtEst}}, \code{\link{logit2}}
 #' @examples
 #'
+#' \dontrun{
 #' TuneSelec()
+#' }
 #'
 
 TuneSelec <- function() {
 
 	# no idea why, but the function doesn't seem to work unless this package is attached
-#	library(rpanel)
+	# library(rpanel)
 
 	# probability graphing function
 	double.draw <- function(panel) {

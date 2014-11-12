@@ -96,7 +96,8 @@
 #' head(surv$MtCatch)
 #'
 
-SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle, MtNum, MtHt, MtWd, MtLen, MtMinCat=2, MtMulti=6, PlotsPdf=NA, Seed=NULL) {
+SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle, MtNum, MtHt, MtWd, MtLen, MtMinCat=2, MtMulti=6, 
+	PlotsPdf=NA, Seed=NULL) {
 
 	# SimPop=res
 	# NumEvents=2
@@ -195,100 +196,91 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle, M
 
 	# acoustic transects
 
-	attach(ACsampinfo)
+		# convert half of the down-looking angle from degrees to radians
+		half.cone.rad <- 2*pi*(AcAngle/2)/360
 
-	# convert half of the down-looking angle from degrees to radians
-	half.cone.rad <- 2*pi*(AcAngle/2)/360
+		# select only those targets within the volume of space sampled by the acoustic transect (triangular prism)
+		sua <- sort(unique(ACsampinfo$ACid))
+		AC <- data.frame(matrix(NA, nrow=0, ncol=13, dimnames=list(NULL, c("Event", "ACid", "ACnorth", 
+			"G", "f.east", "f.north", "f.d2sh", "f.botdep", "f.wdep", "f.d2bot", "len", "wt", "ts"))))
+		# acoustic slice cone cushion, based on angle of transducer and maximum depth
+		cushion <- SimPop$LakeInfo$BotDepMax*tan(half.cone.rad)
 
-	# select only those targets within the volume of space sampled by the acoustic transect (triangular prism)
-	sua <- sort(unique(ACid))
-	AC <- data.frame(matrix(NA, nrow=0, ncol=13, dimnames=list(NULL, c("Event", "ACid", "ACnorth", 
-		"G", "f.east", "f.north", "f.d2sh", "f.botdep", "f.wdep", "f.d2bot", "len", "wt", "ts"))))
-	# acoustic slice cone cushion, based on angle of transducer and maximum depth
-	cushion <- SimPop$LakeInfo$BotDepMax*tan(half.cone.rad)
+		# create a single row of missing values that looks just like the "fish" data frame
+		# this will be used to maintain a row of information on an acoustic transect, even if it captures no targets
+		nofish <- SimPop$Fish[1, ]
+		ncol <- dim(SimPop$Fish)[2]
+		nofish[1, 1:ncol] <- rep(NA, ncol)
+		rm(ncol)
 
-	# create a single row of missing values that looks just like the "fish" data frame
-	# this will be used to maintain a row of information on an acoustic transect, even if it captures no targets
-	nofish <- SimPop$Fish[1, ]
-	ncol <- dim(SimPop$Fish)[2]
-	nofish[1, 1:ncol] <- rep(NA, ncol)
-	rm(ncol)
+		# acoustic transects
+		for(j in sua) {
+			# make sure that the acoustic slice does not extend further north or south than our sample space
+			if(ACsampinfo$ACnorth[j] > (northr[2] - cushion) | ACsampinfo$ACnorth[j] < (northr[1] + cushion)) 
+				warning(paste("\nACid = ", ACsampinfo$ACid[j], ", ACnorth = ", ACsampinfo$ACnorth[j], 
+					": \nThe cone of the acoustic slice extends farther north or south \nthan the boundary of our simulated lake.",
+					"  \nTry again using a different Seed or using fewer acoustic transects."))
+			sel <- (abs(SimPop$Fish$f.north - ACsampinfo$ACnorth[j])) < (SimPop$Fish$f.wdep*tan(half.cone.rad))
 
-	# acoustic transects
-	for(j in sua) {
-		# make sure that the acoustic slice does not extend further north or south than our sample space
-		if(ACnorth[j] > (northr[2] - cushion) | ACnorth[j] < (northr[1] + cushion)) 
-			warning(paste("\nACid = ", ACid[j], ", ACnorth = ", ACnorth[j], 
-				": \nThe cone of the acoustic slice extends farther north or south \nthan the boundary of our simulated lake.",
-				"  \nTry again using a different Seed or using fewer acoustic transects."))
-		sel <- (abs(SimPop$Fish$f.north - ACnorth[j])) < (SimPop$Fish$f.wdep*tan(half.cone.rad))
+			if(sum(sel)>0) {
+				temp <- data.frame(ACsampinfo[rep(j, sum(sel)), c("Event", "ACid", "ACnorth")], SimPop$Fish[sel, ])
+				AC <- rbind(AC, temp)
+				} else {
+				temp <- data.frame(ACsampinfo[rep(j, 1), c("Event", "ACid", "ACnorth")], nofish)
+				AC <- rbind(AC, temp)
+				}
+			}
 
-		if(sum(sel)>0) {
-			temp <- data.frame(ACsampinfo[rep(j, sum(sel)), c("Event", "ACid", "ACnorth")], SimPop$Fish[sel, ])
-			AC <- rbind(AC, temp)
+		rm(cushion)
+
+		# midwater trawl tows
+		# select only those targets within the volume of space sampled by the midwater trawl (rectangular prism)
+		sut <- sort(unique(sampinfo$MTRid))
+		MTRbig <- data.frame(matrix(NA, nrow=0, ncol=20, dimnames=list(NULL, 
+			c("Event", "ACid", "ACnorth", "MTRgrp", "MTRid", "MTReast", "MTRbdep", "MTRwdep", "MTRd2sh", "MTRd2bot", 
+			"G", "f.east", "f.north", "f.d2sh", "f.botdep", "f.wdep", "f.d2bot", "len", "wt", "ts"))))
+		for(m in sut) {
+			j <- match(m, sampinfo$MTRid)
+			sel <- SimPop$Fish$f.north >= (sampinfo$ACnorth[j] - MtWd/2) & SimPop$Fish$f.north <= (sampinfo$ACnorth[j] + MtWd/2) &
+				SimPop$Fish$f.east >= (sampinfo$MTReast[j] - MtLen/2) & SimPop$Fish$f.east <= (sampinfo$MTReast[j] + MtLen/2) &
+				SimPop$Fish$f.wdep <= (sampinfo$MTRwdep[j] + MtHt/2) & SimPop$Fish$f.wdep >= (sampinfo$MTRwdep[j] - MtHt/2)
+			if(sum(sel) >= MtMinCat) {
+				temp <- cbind(sampinfo[rep(j, sum(sel)), ], SimPop$Fish[sel, ])
+				MTRbig <- rbind(MTRbig, temp)
+				}
+			}
+
+		if(dim(MTRbig)[1] > 0) {
+
+			### select only needed number of trawls (remember, we sampled many more than what we needed!) ##
+
+			# create an index of trawls
+			mtr.indx <- MTRbig[first(MTRbig$MTRid)==1, c("Event", "ACid", "MTRgrp", "MTRid")]
+			mtr.indx$mtr.grp <- unlist(lapply(table(mtr.indx$ACid), sample))
+			# create a random variable for sorting
+			y <- runif(length(mtr.indx$mtr.grp))
+			# sort the index of trawls by event abd group number
+			mtr.indx.sort <- mtr.indx[order(mtr.indx$Event, mtr.indx$mtr.grp, y), ]
+
+			# count up the number of trawls in each event
+			f <- first(mtr.indx.sort$Event)
+			x <- rep(NA, length(f))
+			for(ix in 1:length(f)) {
+				x[ix] <- if(f[ix]==1) 1 else x[ix-1]+1
+				}
+			mtr.indx.sort$mtr.count <- x
+			# keep the first MtNum trawls in each event
+			mtr.indx.keep <- mtr.indx.sort[mtr.indx.sort$mtr.count <= MtNum, ]
+
+			MTR <- MTRbig[MTRbig$MTRid %in% mtr.indx.keep$MTRid, ]
+			sampinfo.sub <- sampinfo[sampinfo$MTRid %in% mtr.indx.keep$MTRid, ]
+
+			rm(mtr.indx, y, mtr.indx.sort, f, x, mtr.indx.keep)
+
 			} else {
-			temp <- data.frame(ACsampinfo[rep(j, 1), c("Event", "ACid", "ACnorth")], nofish)
-			AC <- rbind(AC, temp)
+			MTR <- MTRbig[0, ]
+			sampinfo.sub <- sampinfo[0, ]
 			}
-		}
-
-	rm(cushion)
-
-	detach(ACsampinfo)
-	attach(sampinfo)
-
-
-
-	# midwater trawl tows
-	# select only those targets within the volume of space sampled by the midwater trawl (rectangular prism)
-	sut <- sort(unique(MTRid))
-	MTRbig <- data.frame(matrix(NA, nrow=0, ncol=20, dimnames=list(NULL, 
-		c("Event", "ACid", "ACnorth", "MTRgrp", "MTRid", "MTReast", "MTRbdep", "MTRwdep", "MTRd2sh", "MTRd2bot", 
-		"G", "f.east", "f.north", "f.d2sh", "f.botdep", "f.wdep", "f.d2bot", "len", "wt", "ts"))))
-	for(m in sut) {
-		j <- match(m, MTRid)
-		sel <- SimPop$Fish$f.north >= (ACnorth[j] - MtWd/2) & SimPop$Fish$f.north <= (ACnorth[j] + MtWd/2) &
-			SimPop$Fish$f.east >= (MTReast[j] - MtLen/2) & SimPop$Fish$f.east <= (MTReast[j] + MtLen/2) &
-			SimPop$Fish$f.wdep <= (MTRwdep[j] + MtHt/2) & SimPop$Fish$f.wdep >= (MTRwdep[j] - MtHt/2)
-		if(sum(sel) >= MtMinCat) {
-			temp <- cbind(sampinfo[rep(j, sum(sel)), ], SimPop$Fish[sel, ])
-			MTRbig <- rbind(MTRbig, temp)
-			}
-		}
-
-	if(dim(MTRbig)[1] > 0) {
-
-		### select only needed number of trawls (remember, we sampled many more than what we needed!) ##
-
-		# create an index of trawls
-		mtr.indx <- MTRbig[first(MTRbig$MTRid)==1, c("Event", "ACid", "MTRgrp", "MTRid")]
-		mtr.indx$mtr.grp <- unlist(lapply(table(mtr.indx$ACid), sample))
-		# create a random variable for sorting
-		y <- runif(length(mtr.indx$mtr.grp))
-		# sort the index of trawls by event abd group number
-		mtr.indx.sort <- mtr.indx[order(mtr.indx$Event, mtr.indx$mtr.grp, y), ]
-
-		# count up the number of trawls in each event
-		f <- first(mtr.indx.sort$Event)
-		x <- rep(NA, length(f))
-		for(ix in 1:length(f)) {
-			x[ix] <- if(f[ix]==1) 1 else x[ix-1]+1
-			}
-		mtr.indx.sort$mtr.count <- x
-		# keep the first MtNum trawls in each event
-		mtr.indx.keep <- mtr.indx.sort[mtr.indx.sort$mtr.count <= MtNum, ]
-
-		MTR <- MTRbig[MTRbig$MTRid %in% mtr.indx.keep$MTRid, ]
-		sampinfo.sub <- sampinfo[sampinfo$MTRid %in% mtr.indx.keep$MTRid, ]
-
-		rm(mtr.indx, y, mtr.indx.sort, f, x, mtr.indx.keep)
-
-		} else {
-		MTR <- MTRbig[0, ]
-		sampinfo.sub <- sampinfo[0, ]
-		}
-
-	detach(sampinfo)
 
 
 
@@ -305,83 +297,78 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle, M
 	###  diagnostic plots  ###
 	if(is.na(PlotsPdf) | PlotsPdf!=FALSE) {
 
-		attach(sampinfo.sub)
-
-		sel <- AC$Event==1
-		ts.scaled <- (AC$ts[sel] - SimPop$FishInfo$TSRange[1])/diff(SimPop$FishInfo$TSRange)
-		sua <- sort(unique(AC$ACid[sel]))
-		sut <- sort(unique(MTRid[Event==1]))
+			sel <- AC$Event==1
+			ts.scaled <- (AC$ts[sel] - SimPop$FishInfo$TSRange[1])/diff(SimPop$FishInfo$TSRange)
+			sua <- sort(unique(AC$ACid[sel]))
+			sut <- sort(unique(sampinfo.sub$MTRid[sampinfo.sub$Event==1]))
 
 
-		# top view of acoustic transects and midwater trawls - to scale
-		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5, rescale="fit")
-		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-		eqscplot(1, 1, type="n", xlim=eastr/1000, ylim=northr/1000, axes=FALSE, xlab="Easting  (km)", ylab="Northing  (km)", 
-			main=paste(SimPop$LakeInfo$LakeName, "- Top View - drawn to scale"))
-		axis(1)
-		axis(2, las=1)
-		arrows(rep(eastr[1], length(sua))/1000, AC$ACnorth[match(sua, AC$ACid[sel])]/1000, 
-			rep(eastr[2], length(sua))/1000, AC$ACnorth[match(sua, AC$ACid[sel])]/1000, length=0, lwd=2, col="blue") 
-		polygon(eastr[c(1, 2, 2, 1)]/1000, northr[c(1, 1, 2, 2)]/1000)
-		if(length(sut)>0) {
-			for(m in seq(along=sut)) {
-				sel2 <- MTRid==sut[m]
-				polygon((MTReast[sel2]+c(-1, 1, 1, -1)*MtLen/2)/1000, (ACnorth[sel2]+c(1, 1, -1, -1)*MtWd/2)/1000, border="red", lwd=3)
-				}
-			rm(sel2)
-			}
-
-
-		# plot of each acoustic transect with outline of midwater trawl tows
-		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
-		par(mfrow=n2mfrow(length(sua)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-		catch.tots <- table(MTR$MTRid)
-		for(j in seq(along=sua)) {
-			plotblank(AC$f.east/1000, -AC$f.wdep)
-			sel3 <- AC$ACid==sua[j]
-			points(AC$f.east[sel3]/1000, -AC$f.wdep[sel3], cex=2*ts.scaled, col="blue")
-			points(AC$f.east[sel3]/1000, -AC$f.botdep[sel3], pch=16, cex=0.5)
-			sut2 <- sort(unique(MTRid[ACid==sua[j]]))
-			mtext(paste("id=", sua[j], "\nn=", sum(sel3), sep=""), side=1, line=-1.5, adj=0.98, font=2, cex=par("cex"))
-			if(length(sut2)>0) {
-				for(m in seq(along=sut2)) {
-					sel2 <- MTRid==sut2[m]
-					polygon((MTReast[sel2]+c(-1, 1, 1, -1)*MtLen/2)/1000, -MTRwdep[sel2]+c(1, 1, -1, -1)*MtHt/2, border="red", col="white")
-					text(MTReast[sel2]/1000, -MTRwdep[sel2], catch.tots[sel2], font=2, col="red")
+			# top view of acoustic transects and midwater trawls - to scale
+			if(is.na(PlotsPdf)) dev.new(w=9, h=6.5, rescale="fit")
+			par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
+			eqscplot(1, 1, type="n", xlim=eastr/1000, ylim=northr/1000, axes=FALSE, xlab="Easting  (km)", ylab="Northing  (km)", 
+				main=paste(SimPop$LakeInfo$LakeName, "- Top View - drawn to scale"))
+			axis(1)
+			axis(2, las=1)
+			arrows(rep(eastr[1], length(sua))/1000, AC$ACnorth[match(sua, AC$ACid[sel])]/1000, 
+				rep(eastr[2], length(sua))/1000, AC$ACnorth[match(sua, AC$ACid[sel])]/1000, length=0, lwd=2, col="blue") 
+			polygon(eastr[c(1, 2, 2, 1)]/1000, northr[c(1, 1, 2, 2)]/1000)
+			if(length(sut)>0) {
+				for(m in seq(along=sut)) {
+					sel2 <- sampinfo.sub$MTRid==sut[m]
+					polygon((sampinfo.sub$MTReast[sel2]+c(-1, 1, 1, -1)*MtLen/2)/1000, (sampinfo.sub$ACnorth[sel2]+c(1, 1, -1, -1)*MtWd/2)/1000, border="red", lwd=3)
 					}
 				rm(sel2)
 				}
-			}
-		mtext("Easting  (km)", side=1, outer=TRUE)
-		mtext("Fishing depth  (m)", side=2, outer=TRUE)
-		mtext(paste(SimPop$LakeInfo$LakeName, "- Acoustic Transects and Midwater Trawls"), side=3, outer=TRUE, font=2)
 
 
-		# plot of each midwater trawl catch
-		if(length(sut)>0) {
-			barz <- tapply(!is.na(MTR$len), list(MTR$G, 50*floor(MTR$len/50), MTR$MTRid), sum)
-			barz[is.na(barz)] <- 0
-			barz <- barz[, , dimnames(barz)[[3]] %in% sut, drop=FALSE]
-			barz <- barz[apply(barz, 1, sum)>0, , , drop=FALSE]
-			sus <- dimnames(barz)[[1]]
+			# plot of each acoustic transect with outline of midwater trawl tows
 			if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
-			par(mfrow=rev(n2mfrow(length(sut)+1)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
-			for(m in seq(along=sut)) {
-				barplot(barz[, , m], ylim=c(0, max(apply(barz, 2:3, sum))), col=1:50, 
-					names.arg=paste(dimnames(barz)[[2]], "+", sep=""), las=1)
-				mtext(paste("id=", sut[m], "\nn=", sum(barz[, , m]), sep=""), side=3, line=-2.5, adj=0.98, font=2, cex=par("cex"))
-				box()
+			par(mfrow=n2mfrow(length(sua)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
+			catch.tots <- table(MTR$MTRid)
+			for(j in seq(along=sua)) {
+				plotblank(AC$f.east/1000, -AC$f.wdep)
+				sel3 <- AC$ACid==sua[j]
+				points(AC$f.east[sel3]/1000, -AC$f.wdep[sel3], cex=2*ts.scaled, col="blue")
+				points(AC$f.east[sel3]/1000, -AC$f.botdep[sel3], pch=16, cex=0.5)
+				sut2 <- sort(unique(sampinfo.sub$MTRid[sampinfo.sub$ACid==sua[j]]))
+				mtext(paste("id=", sua[j], "\nn=", sum(sel3), sep=""), side=1, line=-1.5, adj=0.98, font=2, cex=par("cex"))
+				if(length(sut2)>0) {
+					for(m in seq(along=sut2)) {
+						sel2 <- sampinfo.sub$MTRid==sut2[m]
+						polygon((sampinfo.sub$MTReast[sel2]+c(-1, 1, 1, -1)*MtLen/2)/1000, -sampinfo.sub$MTRwdep[sel2]+c(1, 1, -1, -1)*MtHt/2, border="red", col="white")
+						text(sampinfo.sub$MTReast[sel2]/1000, -sampinfo.sub$MTRwdep[sel2], catch.tots[sel2], font=2, col="red")
+						}
+					rm(sel2)
+					}
 				}
-			plotblank(axes=FALSE)
-			legend("center", sus, fill=seq(sus), title="Group")
-			mtext("Length  (mm)", side=1, outer=TRUE)
-			mtext("Frequency", side=2, outer=TRUE)
-			mtext(paste(SimPop$LakeInfo$LakeName, "- Midwater Trawl Catch"), side=3, outer=TRUE, font=2)
-			rm(barz, sus)
-			}
+			mtext("Easting  (km)", side=1, outer=TRUE)
+			mtext("Fishing depth  (m)", side=2, outer=TRUE)
+			mtext(paste(SimPop$LakeInfo$LakeName, "- Acoustic Transects and Midwater Trawls"), side=3, outer=TRUE, font=2)
 
 
-		detach(sampinfo.sub)
+			# plot of each midwater trawl catch
+			if(length(sut)>0) {
+				barz <- tapply(!is.na(MTR$len), list(MTR$G, 50*floor(MTR$len/50), MTR$MTRid), sum)
+				barz[is.na(barz)] <- 0
+				barz <- barz[, , dimnames(barz)[[3]] %in% sut, drop=FALSE]
+				barz <- barz[apply(barz, 1, sum)>0, , , drop=FALSE]
+				sus <- dimnames(barz)[[1]]
+				if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
+				par(mfrow=rev(n2mfrow(length(sut)+1)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
+				for(m in seq(along=sut)) {
+					barplot(barz[, , m], ylim=c(0, max(apply(barz, 2:3, sum))), col=1:50, 
+						names.arg=paste(dimnames(barz)[[2]], "+", sep=""), las=1)
+					mtext(paste("id=", sut[m], "\nn=", sum(barz[, , m]), sep=""), side=3, line=-2.5, adj=0.98, font=2, cex=par("cex"))
+					box()
+					}
+				plotblank(axes=FALSE)
+				legend("center", sus, fill=seq(sus), title="Group")
+				mtext("Length  (mm)", side=1, outer=TRUE)
+				mtext("Frequency", side=2, outer=TRUE)
+				mtext(paste(SimPop$LakeInfo$LakeName, "- Midwater Trawl Catch"), side=3, outer=TRUE, font=2)
+				rm(barz, sus)
+				}
 
 		if(!is.na(PlotsPdf)) graphics.off()
 

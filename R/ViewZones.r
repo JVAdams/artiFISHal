@@ -17,18 +17,20 @@
 #' @seealso \code{\link{AcMtEst}}
 #' @examples
 #'
+#' \dontrun{
 #' ViewZones()
 #' ViewZones(c(0.4, 0.4, 0.1, 0.1))
+#' }
 #'
 
-ViewZones <- function(PanelProp=c(0.4, 0.3, 0.2, 0.1)) {
+ViewZones <- function(PanelProps=c(0.4, 0.3, 0.2, 0.1)) {
 	# check validity of the trawl zone proportions that were input
-	if(round(sum(PanelProp), 0.0000001) != 1) stop("Panel proportions should sum to 1.")
+	if(round(sum(PanelProps), 0.0000001) != 1) stop("Panel proportions should sum to 1.")
 
 	mouth.edge <- 1
-	middle.edge <- 1 - PanelProp[1]
-	aft.edge <- middle.edge - PanelProp[2]
-	cod.edge <- aft.edge - PanelProp[3]
+	middle.edge <- 1 - PanelProps[1]
+	aft.edge <- middle.edge - PanelProps[2]
+	cod.edge <- aft.edge - PanelProps[3]
 
 	dev.new(rescale="fit")
 	par(mar=rep(0.1, 4), cex=2)

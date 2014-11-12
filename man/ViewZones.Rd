@@ -3,7 +3,7 @@
 \alias{ViewZones}
 \title{Visualize the Mesh Panel Zones of a Midwater Trawl}
 \usage{
-ViewZones(PanelProp = c(0.4, 0.3, 0.2, 0.1))
+ViewZones(PanelProps = c(0.4, 0.3, 0.2, 0.1))
 }
 \arguments{
 \item{PanelProps}{A numeric vector of length 4, size of the different mesh panel zones of the midwater trawl,
@@ -19,8 +19,10 @@ A diagram is produced giving a view of the midwater trawl mesh panel zones (draw
 located directly in the center of the oncoming trawl path.
 }
 \examples{
+\dontrun{
 ViewZones()
 ViewZones(c(0.4, 0.4, 0.1, 0.1))
+}
 }
 \seealso{
 \code{\link{AcMtEst}}

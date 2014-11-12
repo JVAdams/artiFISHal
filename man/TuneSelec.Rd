@@ -21,7 +21,9 @@ of the mesh panel zones as a double logistic curve:
 Note that the sliders pop up in a separate R window, which may be hidden if you click on another window.
 }
 \examples{
+\dontrun{
 TuneSelec()
+}
 }
 \seealso{
 \code{\link{AcMtEst}}, \code{\link{logit2}}

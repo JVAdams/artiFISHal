@@ -15,11 +15,14 @@ The predictors referred to in the right side of \code{formula(object)} must be p
 Predict the node identification number from a fitted \code{rpart} object.
 }
 \examples{
+\dontrun{
+
 z.auto <- rpart(Mileage ~ Weight, car.test.frame)
 prednode(z.auto, car.test.frame)
 
 fit <- rpart(Kyphosis ~ Age + Number + Start, data = kyphosis)
 prednode(fit, kyphosis)
+}
 }
 \references{
 This function is a modification of an approach suggested in a \href{http://tolstoy.newcastle.edu.au/R/e4/help/08/07/17702.html}{post} to the

@@ -14,12 +14,14 @@
 #' R-help mailing list on 22 July 2008 by 
 #' \href{http://www.stats.ox.ac.uk/~ripley/}{Brian D. Ripley}, Professor of Applied Statistics, University of Oxford, Oxford, UK.
 #' @examples
+#' \dontrun{
 #'
 #' z.auto <- rpart(Mileage ~ Weight, car.test.frame)
 #' prednode(z.auto, car.test.frame)
 #'
 #' fit <- rpart(Kyphosis ~ Age + Number + Start, data = kyphosis)
 #' prednode(fit, kyphosis)
+#' }
 #'
 
 prednode <- function(object, newdata) {

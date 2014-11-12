@@ -93,6 +93,7 @@
 #' analytical approaches for estimating pelagic fish biomass using simulated fish communities}. 
 #' Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.
 #' @examples
+#' \dontrun{
 #'
 #' # parameters for small (a) and large (A) alewife as input to the simulator
 #' fishp <- data.frame(
@@ -118,6 +119,7 @@
 #' head(res$Fish)
 #' res$PropExcluded
 #' 
+#' }
 
 SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVertex=2*BotDepMax, 
 	FishParam, TotNFish, TSRange=c(-65, -20), PlotsPdf=NA, Seed=NULL) {
@@ -163,49 +165,48 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 	 
 	totfish <- sum(FishParam$Nfish)
 
-	attach(FishParam)
-
-	fish <- data.frame(G=rep(G, Nfish), f.east=NA, f.north=NA, f.d2sh=NA, f.botdep=NA, f.wdep=NA, f.d2bot=NA, len=NA, wt=NA, ts=NA)
+	fish <- data.frame(G=rep(FishParam$G, FishParam$Nfish), f.east=NA, f.north=NA, f.d2sh=NA, f.botdep=NA, f.wdep=NA, f.d2bot=NA, 
+		len=NA, wt=NA, ts=NA)
 	if(!is.null(Seed)) set.seed(Seed)
 	for(i in seq(nrowz)) {
 
 		# easting available? no, then yes
-		if(is.na(E[i])) {
-			f.east <- runif(Nfish[i], eastr[1], eastr[2])
+		if(is.na(FishParam$E[i])) {
+			f.east <- runif(FishParam$Nfish[i], eastr[1], eastr[2])
 			f.d2sh <- dfromx(x=f.east, d2shr.we=d2shr.we, eastr=eastr)
 			f.botdep <- zfromx(x=f.east, maxz=BotDepMax, eastr=eastr, ints=ints, slopes=slopes)
 			} else {
-			f.east <- rnorm(Nfish[i], E[i], EE[i]*E[i])
+			f.east <- rnorm(FishParam$Nfish[i], FishParam$E[i], FishParam$EE[i]*FishParam$E[i])
 			f.d2sh <- dfromx(x=f.east, d2shr.we=d2shr.we, eastr=eastr)
 			f.botdep <- zfromx(x=f.east, maxz=BotDepMax, eastr=eastr, ints=ints, slopes=slopes)
 			}
 
 		# northing available? no, then yes
-		if(is.na(N[i])) {
-			f.north <- runif(Nfish[i], northr[1], northr[2])
+		if(is.na(FishParam$N[i])) {
+			f.north <- runif(FishParam$Nfish[i], northr[1], northr[2])
 			} else {
-			f.north <- rnorm(Nfish[i], N[i], NE[i]*N[i])
+			f.north <- rnorm(FishParam$Nfish[i], FishParam$N[i], FishParam$NE[i]*FishParam$N[i])
 			}
 
 		# distance to bottom available? no, then yes (if not, water depth is)
-		if(is.na(D2B[i])) {
-			f.wdep <- rnorm(Nfish[i], WD[i], WDE[i]*WD[i])
+		if(is.na(FishParam$D2B[i])) {
+			f.wdep <- rnorm(FishParam$Nfish[i], FishParam$WD[i], FishParam$WDE[i]*FishParam$WD[i])
 			f.d2bot <- f.botdep - f.wdep
 			} else {
-			f.d2bot <- rnorm(Nfish[i], D2B[i], D2BE[i]*D2B[i])
+			f.d2bot <- rnorm(FishParam$Nfish[i], FishParam$D2B[i], FishParam$D2BE[i]*FishParam$D2B[i])
 			f.wdep <- f.botdep - f.d2bot
 			}
 
 		# generate lengths from gamma distribution
-		shape <- 1/ZE[i]^2
-		scale <- Z[i]/shape
-		len <- rgamma(Nfish[i], shape=shape, scale=scale)
+		shape <- 1/FishParam$ZE[i]^2
+		scale <- FishParam$Z[i]/shape
+		len <- rgamma(FishParam$Nfish[i], shape=shape, scale=scale)
 		# predict weight from length-weight regression coefficients and add error
-		wt. <- LWC1[i]*len^LWC2[i]
-		wt <- wt. + rnorm(Nfish[i], 0, LWCE[i]*wt.)
+		wt. <- FishParam$LWC1[i]*len^FishParam$LWC2[i]
+		wt <- wt. + rnorm(FishParam$Nfish[i], 0, FishParam$LWCE[i]*wt.)
 		# predict target strength from length-ts regression coefficients and add error
-		ts. <- TSC1[i] + TSC2[i]*log10(len/10)
-		ts <- ts. + rnorm(Nfish[i], 0, TSCE[i]*abs(ts.))
+		ts. <- FishParam$TSC1[i] + FishParam$TSC2[i]*log10(len/10)
+		ts <- ts. + rnorm(FishParam$Nfish[i], 0, FishParam$TSCE[i]*abs(ts.))
 
 		fish[start.i[i]:end.i[i], -1] <- cbind(f.east, f.north, f.d2sh, f.botdep, f.wdep, f.d2bot, len, wt, ts)
 		}
@@ -230,17 +231,18 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 	bad <- bad.d2sh | bad.east | bad.north | bad.botdep | bad.wdep | bad.lenwt | bad.ts
 	fish <- fish[!bad, ]
 
-	detach(FishParam)
-
-
+	
+	
 	###  diagnostic plots  ###
 	if(is.na(PlotsPdf) | PlotsPdf!=FALSE) {
 
 		# a random selection of 1,000 fish (total)
 		n <- dim(fish)[1]
 		pick <- if(n<1001) 1:n else sample(1:n, 1000)
-		attach(fish[pick, ])
-		sug <- sort(unique(G))
+		
+		fpick <- fish[pick, ]
+
+		sug <- sort(unique(fpick$G))
 
 		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
@@ -249,35 +251,37 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 			-c(botdepr[1], rep(BotDepMax, 2), botdepr[1], 0, 0, botdepr[1]))
 
 		for(i in seq(along=sug)) {
-			sel <- G==sug[i]
-			text(f.east[sel]/1000, -f.wdep[sel], G[sel], col=i)
+			sel <- fpick$G==sug[i]
+			text(fpick$f.east[sel]/1000, -fpick$f.wdep[sel], fpick$G[sel], col=i)
 			}
 
 		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
 		plotblank(eastr/1000, northr/1000, xlab="Easting  (km)", ylab="Northing  (km)", main=paste(LakeName, "- Top View"))
 		for(i in seq(along=sug)) {
-			sel <- G==sug[i]
-			text(f.east[sel]/1000, f.north[sel]/1000, G[sel], col=i)
+			sel <- fpick$G==sug[i]
+			text(fpick$f.east[sel]/1000, fpick$f.north[sel]/1000, fpick$G[sel], col=i)
 			}
 
-		detach(fish[pick, ])
-
+		
+		
 		# a random selection of 250 fish from each group
 
 		rows.g <- split(seq(along=fish$G), fish$G)
 		pick <- unlist(lapply(rows.g, function(x) sample(x, min(250, length(x)))))
-		attach(fish[pick, ])
-		sug <- sort(unique(G))
+		
+		fpick <- fish[pick, ]
+
+		sug <- sort(unique(fpick$G))
 
 		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
-			sel <- G==sug[i]
+			sel <- fpick$G==sug[i]
 			plotblank(eastr/1000, c(-BotDepMax, 0))
 			lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints, slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000, 
 				-c(botdepr[1], rep(BotDepMax, 2), botdepr[1], 0, 0, botdepr[1]))
-			text(f.east[sel]/1000, -f.wdep[sel], G[sel], col=i)
+			text(fpick$f.east[sel]/1000, -fpick$f.wdep[sel], fpick$G[sel], col=i)
 			}
 		mtext("Easting  (km)", side=1, outer=TRUE)
 		mtext("Water depth  (m)", side=2, outer=TRUE)
@@ -286,9 +290,9 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
-			sel <- G==sug[i]
+			sel <- fpick$G==sug[i]
 			plotblank(eastr/1000, northr/1000)
-			text(f.east[sel]/1000, f.north[sel]/1000, G[sel], col=i)
+			text(fpick$f.east[sel]/1000, fpick$f.north[sel]/1000, fpick$G[sel], col=i)
 			}
 		mtext("Easting  (km)", side=1, outer=TRUE)
 		mtext("Northing  (km)", side=2, outer=TRUE)
@@ -296,40 +300,40 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 
 		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-		plotblank(len, -f.wdep, xlab="Fish length  (mm)", ylab="Water depth  (m)", main=paste(LakeName, "- Size at Depth"))
+		plotblank(fpick$len, -fpick$f.wdep, xlab="Fish length  (mm)", ylab="Water depth  (m)", main=paste(LakeName, "- Size at Depth"))
 		for(i in seq(along=sug)) {
-			sel <- G==sug[i]
-			text(len[sel], -f.wdep[sel], G[sel], col=i)
+			sel <- fpick$G==sug[i]
+			text(fpick$len[sel], -fpick$f.wdep[sel], fpick$G[sel], col=i)
 			}
 
 		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-		plotblank(ts, -f.wdep, xlab="Target strength  (dB)", ylab="Water depth  (m)", main=paste(LakeName, "- Size at Depth"))
+		plotblank(fpick$ts, -fpick$f.wdep, xlab="Target strength  (dB)", ylab="Water depth  (m)", main=paste(LakeName, "- Size at Depth"))
 		for(i in seq(along=sug)) {
-			sel <- G==sug[i]
-			text(ts[sel], -f.wdep[sel], G[sel], col=i)
+			sel <- fpick$G==sug[i]
+			text(fpick$ts[sel], -fpick$f.wdep[sel], fpick$G[sel], col=i)
 			}
 
 		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
-			sel <- G==sug[i]
-			plot(len[sel], wt[sel], las=1, xlab="", ylab="")
+			sel <- fpick$G==sug[i]
+			plot(fpick$len[sel], fpick$wt[sel], las=1, xlab="", ylab="")
 			mtext(sug[i], side=3, adj=0.1, line=-2, font=2)
 			}
 		mtext("Length  (mm)", side=1, outer=TRUE)
 		mtext("Weight  (mm)", side=2, outer=TRUE)
 		mtext(paste(LakeName, "- Length-Weight Relation"), side=3, outer=TRUE, font=2)
 
-		detach(fish[pick, ])
 
+		
 		# histograms of all fish
 
 		fishhist <- function(x, xlab, title, ...) {
 			if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 			par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 			for(i in seq(along=sug)) {
-				sel <- G==sug[i]
+				sel <- fish$G==sug[i]
 				hist(x[sel], nclass=25, col="gray", las=1, xlab="", ylab="", main="", ...)
 				box()
 				mtext(sug[i], side=3, adj=0.9, line=-2, font=2)
@@ -339,20 +343,16 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 			mtext(paste(LakeName, "-", title), side=3, outer=TRUE, font=2)
 		}
 
-		attach(fish)
-
-		sug <- sort(unique(G))
-		fishhist(len, "Length  (mm)", "Length Distribution")
-		fishhist(wt, "Weight  (g)", "Weight Distribution")
-		fishhist(ts, "Target strength  (dB)", "TS Distribution")
-		fishhist(f.east/1000, "Easting  (km)", "Easting Distribution", xlim=eastr/1000)
-		fishhist(f.north/1000, "Northing  (km)", "Northing Distribution", xlim=northr/1000)
-		fishhist(f.d2sh, "Distance to Shore  (m)", "Distance to Shore Distribution", xlim=d2shr)
-		fishhist(f.wdep, "Water Depth  (m)", "Water Depth Distribution", xlim=c(0, BotDepMax))
-		fishhist(f.d2bot, "Distance to Bottom  (m)", "Distance to Bottom Distribution", xlim=c(0, BotDepMax))
-		fishhist(f.botdep, "Bottom Depth  (m)", "Bottom Depth Distribution", xlim=c(0, BotDepMax))
-
-		detach(fish)
+		sug <- sort(unique(fish$G))
+		fishhist(fish$len, "Length  (mm)", "Length Distribution")
+		fishhist(fish$wt, "Weight  (g)", "Weight Distribution")
+		fishhist(fish$ts, "Target strength  (dB)", "TS Distribution")
+		fishhist(fish$f.east/1000, "Easting  (km)", "Easting Distribution", xlim=eastr/1000)
+		fishhist(fish$f.north/1000, "Northing  (km)", "Northing Distribution", xlim=northr/1000)
+		fishhist(fish$f.d2sh, "Distance to Shore  (m)", "Distance to Shore Distribution", xlim=d2shr)
+		fishhist(fish$f.wdep, "Water Depth  (m)", "Water Depth Distribution", xlim=c(0, BotDepMax))
+		fishhist(fish$f.d2bot, "Distance to Bottom  (m)", "Distance to Bottom Distribution", xlim=c(0, BotDepMax))
+		fishhist(fish$f.botdep, "Bottom Depth  (m)", "Bottom Depth Distribution", xlim=c(0, BotDepMax))
 
 		if(!is.na(PlotsPdf)) graphics.off()
 

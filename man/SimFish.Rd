@@ -106,6 +106,8 @@ scatterplots of 1,000 fish randomly selected from the population, scatterplots o
 and histograms of the size and spatial distribution of all the fish in the lake.
 }
 \examples{
+\dontrun{
+
 # parameters for small (a) and large (A) alewife as input to the simulator
 fishp <- data.frame(
 	G = c("a", "A", "A"),
@@ -129,6 +131,8 @@ res$FishInfo
 head(res$FishParam)
 head(res$Fish)
 res$PropExcluded
+
+}
 }
 \references{
 Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.

@@ -26,6 +26,8 @@ Column names and descriptions:
 Visualization of midwater trawl selectivity curves based on parameters used in \code{\link{AcMtEst}}.
 }
 \examples{
+\dontrun{
+
 selec <- data.frame(
 	G = c("A", "a", "A", "a", "A", "a"),
 	Zone = c("mouth", "mouth", "middle", "middle", "aft", "aft"),
@@ -34,6 +36,7 @@ selec <- data.frame(
 	MtL50Large = c(180, 180, Inf, Inf, Inf, Inf),
 	MtSlopeLarge = c(20, 20, 100, 100, 100, 100))
 ViewSelec(selec)
+}
 }
 \seealso{
 \code{\link{AcMtEst}}, \code{\link{logit2}}

@@ -21,6 +21,7 @@
 #' @export
 #' @seealso \code{\link{AcMtEst}}, \code{\link{logit2}}
 #' @examples
+#' \dontrun{
 #'
 #' selec <- data.frame(
 #' 	G = c("A", "a", "A", "a", "A", "a"), 
@@ -30,6 +31,7 @@
 #' 	MtL50Large = c(180, 180, Inf, Inf, Inf, Inf), 
 #' 	MtSlopeLarge = c(20, 20, 100, 100, 100, 100))
 #' ViewSelec(selec)
+#' }
 #'
 
 ViewSelec <- function(SelecParam) {
