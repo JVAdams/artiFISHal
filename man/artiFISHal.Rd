@@ -16,7 +16,7 @@ Use \code{\link{SimFish}} to create an artificial lake and populate it with know
 to mimic pelagic fish communities.
 Use \code{\link{SampFish}} to sample the fish population with virtual acoustic and midwater trawl surveys.
 
-\href{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}{Yule et al. (2013)} used \pkg{artiFISHal}
+Yule et al. (2013) used \pkg{artiFISHal}
 to evaluate several different approaches for estimating the biomass of pelagic fish species in the Great Lakes.
 
 \emph{U.S. Geological Survey} (USGS) Computer Program \pkg{artiFISHal} version 2014-07.
@@ -33,8 +33,8 @@ any such warranty, and no responsibility is assumed by the USGS in connection th
 }
 \references{
 Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.
-\href{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}{Evaluating
-analytical approaches for estimating pelagic fish biomass using simulated fish communities}.
+Evaluating analytical approaches for estimating pelagic fish biomass using simulated fish communities.
 Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.
+\strong{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}
 }
 

@@ -89,9 +89,10 @@
 #' @import 				MASS
 #' @seealso \code{\link{SampFish}}
 #' @references Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.  
-#' \href{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}{Evaluating 
-#' analytical approaches for estimating pelagic fish biomass using simulated fish communities}. 
-#' Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.
+#' Evaluating analytical approaches for estimating pelagic fish biomass using simulated fish communities. 
+#' Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.  
+#' \strong{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}
+#'
 #' @examples
 #' \dontrun{
 #'

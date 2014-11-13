@@ -103,9 +103,9 @@ head(surv$MtCatch)
 }
 \references{
 Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.
-\href{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}{Evaluating
-analytical approaches for estimating pelagic fish biomass using simulated fish communities}.
+Evaluating analytical approaches for estimating pelagic fish biomass using simulated fish communities.
 Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.
+\strong{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}
 
 Yule, DL.  2000.
 \href{http://www.tandfonline.com/doi/abs/10.1577/1548-8675(2000)020%3C0759%3ACOHAAP%3E2.3.CO%3B2}{Comparison
