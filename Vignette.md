@@ -9,6 +9,9 @@ Start by loading the package.
 
 	library(artiFISHal)
 
+===
+### Simulate A Population of Fish
+
 Create a data frame with 18 columns in which each row describes a sub-population of fish to be placed in the artificial lake. 
 The first 11 columns must be completely filled in (no missing values). 
 
@@ -67,8 +70,8 @@ For the purposes of this vignette, I will create the data frame using code.
 This data frame contains information on six groups of fish in 14 rows of data.
 To get some idea of how this works, have a look at rows 3-6 which includes specifications for group A, alewife large.
 The size of the fish being simulated are the same in all four rows (Z, ZE, LWC1, LWC3, LWCE, TSC1, TSC2, and TSCE).
-But, the location of the fish are different: 3.5% are at easting 600 (with SD 2.5\*600), 1.5% are at easting 9000 (SD 0.9\*9000),
-1.5% are at easting 17900 (with SD 0.6\*17900), and 3.5% are at easting 28900 (SD 0.1\*28900).
+But, the location of the fish are different: 3.5% are at easting 600 (with SD 2.5 \* 600), 1.5% are at easting 9000 (SD 0.9 \* 9000),
+1.5% are at easting 17900 (with SD 0.6 \* 17900), and 3.5% are at easting 28900 (SD 0.1 \* 28900).
 All of the groups of fish are located using water depth (WD and WDE), except for group B, bloater large,
 which are located using distance to bottom (D2B and D2BE).
 		
@@ -97,7 +100,7 @@ Look at the results.  Look at the true total number and weight of each fish grou
 
 	myfish$Truth
 	
-				  n         kg     nperha       kgperha
+			  n         kg     nperha       kgperha
 	a     38521  88.639197 0.64201667 0.00147731995
 	A      4791  88.455773 0.07985000 0.00147426288
 	b      4896   9.576029 0.08160000 0.00015960048
@@ -120,10 +123,15 @@ Columns describe the fish group, location, and fish size.
 	9 a  9106.080 16052.540 10217.191 100.00000 12.18392 87.81608 64.67095 2.049004 -48.81689
 
 Simulating a fish population that looks the way you intended may take some trial and error. 
+A number of graphs are created illustrating the fish population that you've simulated to aid in this trial and error process.
+A few examples are shown below.
 
-![Dose-effect relation](https://github.com/JVAdams/LW1949/blob/master/Capture.PNG)
-
-\href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/LakeFigures.JPG}{diagram}.
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide1.BMP)
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide2.BMP)
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide3.BMP)
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide4.BMP)
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide5.BMP)
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide6.BMP)
 
 In the process of creating the population, `SimFish` will eliminate fish based on their size 
 (Length or Weight less than zero or TS outside the allowable TS range) or 
@@ -191,25 +199,66 @@ The output from `SimFish` also keeps the inputs that were supplied as arguments 
 	5 alewife large A 127 0.30 0.000014 2.8638 0.05 -64.2 20.5 0.05 0.015  9000 0.9 10000  1 11 0.2  NA   NA  1500
 	6 alewife large A 127 0.30 0.000014 2.8638 0.05 -64.2 20.5 0.05 0.015 17900 0.6 10000  1 11 0.2  NA   NA  1500
 
+===
+### Sample the Fish Population
+
 Once you have the population the way you want it, you can sample the population with a virtual acoustic and midwater trawl survey. 
 
 	mysurv <- SampFish(SimPop=myfish, NumEvents=10, AcNum=15, AcInterval=30000, AcLayer=10, AcAngle=7, 
 		MtNum=30, MtHt=10, MtWd=10, MtLen=2000, Seed=341)
 
-This will yield two sample data frames, one for the acoustic targets detected and one for the midwater trawl catch. 
+This will display the following output,
+
+	Mean number of fish per acoustic transect = 8
+	Mean number of fish per midwater trawl tow = 2.6
+		
+in addition to a few graphs summarizing the catch.  The output from `SampFish` has two sample data frames, 
+one for the acoustic targets detected and one for the midwater trawl catch. 
 
 	head(mysurv$Targets)
+
+		Event ACid  ACnorth interval layer    f.east  f.north    f.d2sh  f.botdep   f.wdep  f.d2bot        ts G      len       wt
+	1       1    1 226.4871    15000    15  4731.921 226.1967  5843.032 100.00000 12.35791 87.64209 -46.21903 a 75.13432 3.153108
+	1.1     1    1 226.4871    15000    15 10068.349 226.3635 11179.460 100.00000 14.20916 85.79084 -49.27524 a 55.91032 1.434534
+	1.2     1    1 226.4871    15000    15 17416.707 226.2335 14805.515 100.00000 13.54249 86.45751 -50.01943 a 72.71979 2.738727
+	1.3     1    1 226.4871    15000    15 17533.835 226.6315 14688.387 100.00000 11.54177 88.45823 -50.25154 a 65.08561 2.201175
+	1.4     1    1 226.4871    15000    15  1348.329 226.4841  2459.440  44.26992 12.48686 31.78306 -46.93286 A 72.70365 3.034980
+	1.5     1    1 226.4871    15000    15 27787.635 226.7050  4434.588  39.91129 10.41862 29.49267 -45.91410 A 67.37459 2.504339
+
+
 	head(mysurv$MtCatch)
+
+		 Event ACid ACnorth MTRid  MTReast   MTRd2sh   MTRbdep   MTRwdep MTRd2bot G       len         wt   f.east  f.north    f.d2sh  f.botdep    f.wdep  f.d2bot        ts
+	55       1    5 5559.82    55 9985.163 11096.274 100.00000 18.909694 81.09031 s  42.33906  0.4159183 9040.986 5559.049 10152.098 100.00000 16.809346 83.19065 -58.54070
+	55.1     1    5 5559.82    55 9985.163 11096.274 100.00000 18.909694 81.09031 b  53.75177  0.7422804 9891.081 5562.400 11002.192 100.00000 19.031482 80.96852 -51.00658
+	58       1    5 5559.82    58 2135.943  3247.054  58.44697 17.542449 40.90452 a  55.44073  1.4194104 2616.979 5558.572  3728.090  67.10562 16.214844 50.89077 -50.63201
+	58.1     1    5 5559.82    58 2135.943  3247.054  58.44697 17.542449 40.90452 a  81.21204  4.2189988 2413.535 5562.214  3524.646  63.44363 14.960325 48.48330 -41.96773
+	58.2     1    5 5559.82    58 2135.943  3247.054  58.44697 17.542449 40.90452 a  67.05389  2.4610922 2518.213 5564.127  3629.325  65.32784 14.721495 50.60635 -46.39444
+	87       1    8 9559.82    87 2474.812  3585.923  64.54662  8.915031 55.63159 A 122.05264 14.9580374 3229.151 9558.463  4340.262  78.12471  9.861536 68.26318 -42.00870
 
 The output from `SampFish` also keeps the inputs supplied as arguments for use in later sampling and summarization. 
 
 	mysurv$SurvParam
+
+	 NumEvents      AcNum AcInterval    AcLayer    AcAngle      MtNum       MtHt       MtWd      MtLen   MtMinCat    MtMulti       Seed 
+			10         15      30000         10          7         30         10         10       2000          2          6        341 
+
+===
+### Generate Estimates from the Sample
 
 Estimate the number and biomass of fish per unit area sampled using the `AcMtEst` function
 which combines the acoustic and midwater trawl data. 
 
 	perf <- AcMtEst(SimPop=myfish, AcMtSurv=mysurv, Seed=927)
 	head(perf)
+
+	  Event G     nperha       kgperha
+	1     1 a 0.02927073 0.00008536381
+	2     1 A 0.02697084 0.00022705222
+	3     1 b 0.01429321 0.00001932634
+	4     1 B 0.00000000 0.00000000000
+	5     1 s 0.01429321 0.00002859123
+	6     1 S 0.00000000 0.00000000000
 
 The virtual acoustic and midwater trawl surveys carried out by `SampFish` are assumed to be *perfect* with no issues of fish availability, 
 acoustic dead zones, or trawl selectivity. 
@@ -227,6 +276,8 @@ from the mouth (outermost panel) to the cod end (innermost panel).
 You can get a fish's eye view of the panel sizes denoted using the `ViewZones` function. 
 
 	ViewZones(PanelProp = c(0.4, 0.3, 0.2, 0.1))
+	
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide7.PNG)
 
 The `SelecParam` argument is used to denote the mesh selectivity for each fish group (species, life stage) and trawl panel zone. 
 You can use the `MeshPass` function to determine the largest height (or depth) of a fish that can pass through a 
@@ -236,12 +287,17 @@ and the length to height ratio of the fish `L2HRatio`.
 
 	MeshPass(BarMesh=2, H2WRatio=0.3, L2HRatio=4)
 
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide8.PNG)
+
 A double logistic regression function is used to specify selectivity as a function of fish total length
 using two slopes and two inflection points. 
 If you have some notion of what the selectivity curve should look like, 
 you can use the `TuneSelec` function to discover the corresponding parameters using interactive *sliders*. 
 
 	TuneSelec()
+
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide9.PNG)
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide10.PNG)
 
 Once you have chosen the selectivity parameters you want to use, put them in a data frame. 
 
@@ -252,12 +308,31 @@ Once you have chosen the selectivity parameters you want to use, put them in a d
 		MtSlopeSmall = c(40, 40, 30, 30, 20, 20),
 		MtL50Large = c(180, 180, Inf, Inf, Inf, Inf),
 		MtSlopeLarge = c(20, 20, 100, 100, 100, 100))
+	selec
+
+	  G   Zone MtL50Small MtSlopeSmall MtL50Large MtSlopeLarge
+	1 A  mouth        100           40        180           20
+	2 a  mouth         90           40        180           20
+	3 A middle         60           30        Inf          100
+	4 a middle         50           30        Inf          100
+	5 A    aft         30           20        Inf          100
+	6 a    aft          2           20        Inf          100
 
 Then you can visually compare the selectivity curves for the different fish groups using the `ViewSelec` function. 
 
 	ViewSelec(selec)
+	
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide11.PNG)
 
 If all looks well, you can now derive estimates from the survey, incorporating these availabilities and selectivities. 
 
 	imperf <- AcMtEst(SimPop=myfish, AcMtSurv=mysurv, SelecParam=selec, AcExcl=c(5, 10), MtExcl=c(2, 2), Seed=204)
 	head(imperf)
+	
+	  Event G     nperha       kgperha
+	1     1 a 0.04153298 0.00013806848
+	2     1 A 0.02768865 0.00020809515
+	3     1 b 0.00000000 0.00000000000
+	4     1 B 0.00000000 0.00000000000
+	5     1 s 0.01384433 0.00004962851
+	6     1 S 0.00000000 0.00000000000
