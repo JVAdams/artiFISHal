@@ -10,7 +10,7 @@ Start by loading the package.
 	library(artiFISHal)
 
 ===
-### Simulate A Population of Fish
+### Simulate a Population of Fish
 
 Create a data frame with 18 columns in which each row describes a sub-population of fish to be placed in the artificial lake. 
 The first 11 columns must be completely filled in (no missing values). 
@@ -69,11 +69,11 @@ For the purposes of this vignette, I will create the data frame using code.
 
 This data frame contains information on six groups of fish in 14 rows of data.
 To get some idea of how this works, have a look at rows 3-6 which includes specifications for group A, alewife large.
-The size of the fish being simulated are the same in all four rows (Z, ZE, LWC1, LWC3, LWCE, TSC1, TSC2, and TSCE).
-But, the location of the fish are different: 3.5% are at easting 600 (with SD 2.5 \* 600), 1.5% are at easting 9000 (SD 0.9 \* 9000),
-1.5% are at easting 17900 (with SD 0.6 \* 17900), and 3.5% are at easting 28900 (SD 0.1 \* 28900).
-All of the groups of fish are located using water depth (WD and WDE), except for group B, bloater large,
-which are located using distance to bottom (D2B and D2BE).
+The sizes of the fish (`Z`, `ZE`, `LWC1`, `LWC3`, `LWCE`, `TSC1`, `TSC2`, and `TSCE`) being simulated are the same in all four rows.
+But, the locations of the fish are different: 3.5% are at easting 600 (with SD 2.5 \* 600), 1.5% are at easting 9,000 (SD 0.9 \* 9,000),
+1.5% are at easting 17,900 (with SD 0.6 \* 17,900), and 3.5% are at easting 28,900 (SD 0.1 \* 28,900).
+All of the groups of fish are located using water depth (`WD` and `WDE`), except for group B, bloater large,
+which are located using distance to bottom (`D2B` and `D2BE`).
 		
 			   Description G   Z   ZE       LWC1   LWC2 LWCE   TSC1  TSC2 TSCE  PropN     E  EE     N  NE WD WDE D2B D2BE
 	1        alewife small a  65 0.15 0.00001400 2.8638 0.05 -64.20 20.50 0.03 0.3000  9300 0.7 10000 1.0 14 0.2  NA   NA
@@ -96,7 +96,7 @@ Now you can use the `SimFish` function to simulate the fish population based on 
 	myfish <- SimFish(LakeName="My Lake", LkWidth=30000, LkLength=20000, BotDepMin=20, BotDepMax=100, 
 		FishParam=ExInputs, TotNFish=100000, Seed=545)
 
-Look at the results.  Look at the true total number and weight of each fish group in the population. 
+Look at the true total number and weight of each fish group in the population. 
 
 	myfish$Truth
 	
@@ -109,8 +109,8 @@ Look at the results.  Look at the true total number and weight of each fish grou
 	S      3648  54.411041 0.06080000 0.00090685069
 	Total 63940 773.730202 1.06566667 0.01289550337
 
-Look at the fish population that you just simulated.  Each row represents a single fish. 
-Columns describe the fish group, location, and fish size. 
+Look at the fish population that you just simulated.  Each row represents a single individual fish. 
+Columns describe the group, location, and size of the fish. 
 
 	head(myfish$Fish)
 	
@@ -134,8 +134,8 @@ A few examples are shown below.
 ![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide6.BMP)
 
 In the process of creating the population, `SimFish` will eliminate fish based on their size 
-(Length or Weight less than zero or TS outside the allowable TS range) or 
-location (Easting, Northing, WaterDepth, BottomDepth, D2Shore outside their allowable ranges). 
+(length or weight less than zero or target strength outside the allowable range) or 
+location (easting, northing, water depth, bottom depth, or distance to shore outside their allowable ranges). 
 You will likely end up with fewer fish than you requested. 
 But, if you end up with *far* fewer fish than expected, you should look at the proportion of fish excluded
 to troubleshoot where in the inputs the problem might lie. 
@@ -273,7 +273,7 @@ In addition, selectivity curves can be specified for different panels of the mid
 `PanelProps` and `SelecParam`. 
 The `PanelProps` argument is used to denote the relative sizes of four different panels in the trawl,
 from the mouth (outermost panel) to the cod end (innermost panel). 
-You can get a fish's eye view of the panel sizes denoted using the `ViewZones` function. 
+You can get a fish's-eye view of the panel sizes denoted using the `ViewZones` function. 
 
 	ViewZones(PanelProp = c(0.4, 0.3, 0.2, 0.1))
 	

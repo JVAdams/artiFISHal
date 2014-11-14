@@ -21,7 +21,7 @@ SimFish(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVertex = 2 *
 \item{BotDepVertex}{A numeric scalar, the vertical distance from the surface to the "vertex" of the lake bottom (in m), default \code{2*BotDepMax}.
 The "vertex" of the lake bottom is the point at which the angled lake beds along the west and east shores would intersect,
 were they not cut off first by the specified \code{BotDepMax}.
-View this \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/LakeFigures.JPG}{figure} for a diagram of the artificial lake.}
+View this \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/LakeFigures.JPG}{figure} for a diagram of the artificial lake.}
 
 \item{FishParam}{A data frame with 18 columns in which each row describes a sub-population of fish to be placed in the artificial lake.
 The first 11 columns must be completely filled in (no missing values).
@@ -95,7 +95,7 @@ The east and west boundaries of the artifical lake do not reach the shoreline of
 The north and south boundaries of the artificial lake do not ascend to a shoreline,
 instead the bottom depth remains constant in the south-north direction (i.e., for a given easting).
 The angle of the western lake bed is twice as steep as the angle of the eastern lake bed.
-View the top and side views of the artificial lake in this \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/LakeFigures.JPG}{diagram}.
+View the top and side views of the artificial lake in this \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/LakeFigures.JPG}{diagram}.
 
 You may wish to cap the total number of fish at 5 million if your computer has a memory of about 2 GB (2047 MB).
 This limit can be increased if you have more memory available in R.
