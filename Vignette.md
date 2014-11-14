@@ -10,28 +10,11 @@ Start by loading the package.
 	library(artiFISHal)
 
 Create a data frame with 18 columns in which each row describes a sub-population of fish to be placed in the artificial lake. 
-The first 11 columns must be completely filled in (no missing values). 
-
-- **G** = character, a one-letter nickname for the group (e.g., fish species and lifestage) used in plotting
-- **Z** = numeric, mean length (in mm)
-- **ZE** = numeric, error around mean length, expressed as SD/mean
-- **LWC1**, **LWC2** = numeric, length-weight regression coefficients, where wt = LWC1*len^LWC2, (wt in g, len in mm)
-- **LWCE** = numeric, error around weight estimate, expressed as SD(estimate)/estimate
-- **TSC1**, **TSC2** = numeric, target strength and length relation coefficients, ts = TSC1 + TSC2*log10(len/10), (ts in db, len in mm)
-- **TSCE** = numeric, error around target strength estimate, expressed as SD(estimate)/estimate
-- **PropN** = numeric, approximate proportion of population that the row represents (automatically adjusted to ensure they sum to 1)
-
-The last 8 columns may have some missing values. 
+The first 11 columns must be completely filled in (no missing values). The last 8 columns may have some missing values. 
 However, in each row, either water depth (WD and WDE) or distance to bottom (D2B and D2BE) must be filled in, but not both. 
+See the `SimFish` help file for more information on the column names and descriptions.
 
-- **E** = numeric, mean easting (m)
-- **EE** = numeric, error around easting, expressed as SD/mean
-- **N** = numeric, mean northing (m)
-- **NE** = numeric, error around northing, expressed as SD/mean
-- **WD** = numeric, mean water depth (m)
-- **WDE** = numeric, error around water depth, expressed as SD/mean
-- **D2B** = numeric, mean distance to bottom (m)
-- **D2BE** = numeric, error around distance to bottom, expressed as SD/mean
+	?SimFish
 
 You may find that the easiest way to create this data frame is by entering the information in an external file, 
 e.g., a comma delimited file.  In that case, you would read in the data frame using the `read.csv` function. 
@@ -64,30 +47,6 @@ For the purposes of this vignette, I will create the data frame using code.
 		D2B = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 15, 15), 
 		D2BE = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.3, 0.3))
 
-This data frame contains information on six groups of fish in 14 rows of data.
-To get some idea of how this works, have a look at rows 3-6 which includes specifications for group A, alewife large.
-The size of the fish being simulated are the same in all four rows (Z, ZE, LWC1, LWC3, LWCE, TSC1, TSC2, and TSCE).
-But, the location of the fish are different: 3.5% are at easting 600 (with SD 2.5\*600), 1.5% are at easting 9000 (SD 0.9\*9000),
-1.5% are at easting 17900 (with SD 0.6\*17900), and 3.5% are at easting 28900 (SD 0.1\*28900).
-All of the groups of fish are located using water depth (WD and WDE), except for group B, bloater large,
-which are located using distance to bottom (D2B and D2BE).
-		
-			   Description G   Z   ZE       LWC1   LWC2 LWCE   TSC1  TSC2 TSCE  PropN     E  EE     N  NE WD WDE D2B D2BE
-	1        alewife small a  65 0.15 0.00001400 2.8638 0.05 -64.20 20.50 0.03 0.3000  9300 0.7 10000 1.0 14 0.2  NA   NA
-	2        alewife small a  65 0.15 0.00001400 2.8638 0.05 -64.20 20.50 0.03 0.3000 17000 0.4 10000 1.0 14 0.2  NA   NA
-	3        alewife large A 127 0.30 0.00001400 2.8638 0.05 -64.20 20.50 0.05 0.0350   600 2.5 10000 1.0 11 0.2  NA   NA
-	4        alewife large A 127 0.30 0.00001400 2.8638 0.05 -64.20 20.50 0.05 0.0350 28900 0.1 10000 1.0 11 0.2  NA   NA
-	5        alewife large A 127 0.30 0.00001400 2.8638 0.05 -64.20 20.50 0.05 0.0150  9000 0.9 10000 1.0 11 0.2  NA   NA
-	6        alewife large A 127 0.30 0.00001400 2.8638 0.05 -64.20 20.50 0.05 0.0150 17900 0.6 10000 1.0 11 0.2  NA   NA
-	7  rainbow smelt small s  55 0.30 0.00000481 3.0331 0.05 -67.80 19.90 0.05 0.0375  9300 0.7 10000 1.0 16 0.2  NA   NA
-	8  rainbow smelt small s  55 0.30 0.00000481 3.0331 0.05 -67.80 19.90 0.05 0.0375 17000 0.4 10000 1.0 16 0.2  NA   NA
-	9  rainbow smelt large S 127 0.30 0.00000481 3.0331 0.05 -67.80 19.90 0.08 0.0375   600 2.2 17000 0.1 29 0.3  NA   NA
-	10 rainbow smelt large S 127 0.30 0.00000481 3.0331 0.05 -67.80 19.90 0.08 0.0375 28900 0.1 17000 0.1 29 0.3  NA   NA
-	11       bloater small b  70 0.15 0.00000102 3.3812 0.05 -70.88 25.54 0.03 0.0375  9300 0.7 10000 1.0 20 0.2  NA   NA
-	12       bloater small b  70 0.15 0.00000102 3.3812 0.05 -70.88 25.54 0.03 0.0375 17000 0.4 10000 1.0 20 0.2  NA   NA
-	13       bloater large B 190 0.30 0.00000102 3.3812 0.05 -70.88 25.54 0.04 0.0375  3400 0.3  7500 0.5 NA  NA  15  0.3
-	14       bloater large B 190 0.30 0.00000102 3.3812 0.05 -70.88 25.54 0.04 0.0375 23300 0.1  7500 0.5 NA  NA  15  0.3
-
 Now you can use the `SimFish` function to simulate the fish population based on these parameters. 
 
 	myfish <- SimFish(LakeName="My Lake", LkWidth=30000, LkLength=20000, BotDepMin=20, BotDepMax=100, 
@@ -96,100 +55,26 @@ Now you can use the `SimFish` function to simulate the fish population based on 
 Look at the results.  Look at the true total number and weight of each fish group in the population. 
 
 	myfish$Truth
-	
-				  n         kg     nperha       kgperha
-	a     38521  88.639197 0.64201667 0.00147731995
-	A      4791  88.455773 0.07985000 0.00147426288
-	b      4896   9.576029 0.08160000 0.00015960048
-	B      7328 527.063943 0.12213333 0.00878439905
-	s      4756   5.584219 0.07926667 0.00009307032
-	S      3648  54.411041 0.06080000 0.00090685069
-	Total 63940 773.730202 1.06566667 0.01289550337
 
 Look at the fish population that you just simulated.  Each row represents a single fish. 
 Columns describe the fish group, location, and fish size. 
 
 	head(myfish$Fish)
-	
-	  G    f.east   f.north    f.d2sh  f.botdep   f.wdep  f.d2bot      len       wt        ts
-	1 a 12355.212 16823.528 13466.323 100.00000 13.60617 86.39383 59.81102 1.595275 -49.49159
-	2 a 12559.997 12749.377 13671.108 100.00000 12.48335 87.51665 64.93574 2.106270 -44.95919
-	3 a  4237.675 14277.050  5348.786  96.27815 20.25294 76.02521 80.84223 4.227741 -46.51572
-	4 a  2185.455  5228.477  3296.566  59.33820 16.64036 42.69784 52.59334 1.191047 -48.87585
-	5 a  4965.597 17912.420  6076.708 100.00000 12.44079 87.55921 78.76110 3.766953 -46.85894
-	9 a  9106.080 16052.540 10217.191 100.00000 12.18392 87.81608 64.67095 2.049004 -48.81689
 
 Simulating a fish population that looks the way you intended may take some trial and error. 
-
-![Dose-effect relation](https://github.com/JVAdams/LW1949/blob/master/Capture.PNG)
-
-\href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/LakeFigures.JPG}{diagram}.
-
-In the process of creating the population, `SimFish` will eliminate fish based on their size 
-(Length or Weight less than zero or TS outside the allowable TS range) or 
-location (Easting, Northing, WaterDepth, BottomDepth, D2Shore outside their allowable ranges). 
+In the process of creating the population, `SimFish` will eliminate fish based on their size (Length, Weight, TS) or 
+location (Easting, Northing, WaterDepth, BottomDepth, D2Shore). 
 You will likely end up with fewer fish than you requested. 
 But, if you end up with *far* fewer fish than expected, you should look at the proportion of fish excluded
 to troubleshoot where in the inputs the problem might lie. 
 
 	myfish$PropExcluded
-	
-	LengthWeight           TS      Easting     Northing   WaterDepth  BottomDepth      D2Shore 
-		 0.00000      0.00020      0.09728      0.27628      0.09472      0.04808      0.08345 
 
 The output from `SimFish` also keeps the inputs that were supplied as arguments for use in later sampling and summarization. 
 
 	myfish$LakeInfo
-	
-	$LakeName
-	[1] "My Lake"
-
-	$LkWidth
-	[1] 30000
-
-	$LkLength
-	[1] 20000
-
-	$BotDepMin
-	[1] 20
-
-	$BotDepMax
-	[1] 100
-
-	$BotDepVertex
-	[1] 200
-
-	$ints
-	[1]  20 290
-
-	$slopes
-	[1]  0.018 -0.009
-
-	$d2shr.we
-	[1] 1111.111 2222.222
-
-	
 	myfish$FishInfo
-	
-	$TotNFish
-	[1] 100000
-
-	$TSRange
-	[1] -65 -20
-
-	$Seed
-	[1] 545
-
-
 	head(myfish$FishParam)
-	
-	    Description G   Z   ZE     LWC1   LWC2 LWCE  TSC1 TSC2 TSCE PropN     E  EE     N NE WD WDE D2B D2BE Nfish
-	1 alewife small a  65 0.15 0.000014 2.8638 0.05 -64.2 20.5 0.03 0.300  9300 0.7 10000  1 14 0.2  NA   NA 30000
-	2 alewife small a  65 0.15 0.000014 2.8638 0.05 -64.2 20.5 0.03 0.300 17000 0.4 10000  1 14 0.2  NA   NA 30000
-	3 alewife large A 127 0.30 0.000014 2.8638 0.05 -64.2 20.5 0.05 0.035   600 2.5 10000  1 11 0.2  NA   NA  3500
-	4 alewife large A 127 0.30 0.000014 2.8638 0.05 -64.2 20.5 0.05 0.035 28900 0.1 10000  1 11 0.2  NA   NA  3500
-	5 alewife large A 127 0.30 0.000014 2.8638 0.05 -64.2 20.5 0.05 0.015  9000 0.9 10000  1 11 0.2  NA   NA  1500
-	6 alewife large A 127 0.30 0.000014 2.8638 0.05 -64.2 20.5 0.05 0.015 17900 0.6 10000  1 11 0.2  NA   NA  1500
 
 Once you have the population the way you want it, you can sample the population with a virtual acoustic and midwater trawl survey. 
 
