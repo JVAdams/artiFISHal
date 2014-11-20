@@ -15,7 +15,7 @@ Start by loading the package.
 Create a data frame with 18 columns in which each row describes a sub-population of fish to be placed in the artificial lake. 
 The first 11 columns must be completely filled in (no missing values). 
 
-- **G** = character, a one-letter nickname for the group (e.g., fish species and lifestage) used in plotting
+- **G** = character, a one-letter nickname for the group (e.g., fish species and life stage) used in plotting
 - **Z** = numeric, mean length (in mm)
 - **ZE** = numeric, error around mean length, expressed as SD/mean
 - **LWC1**, **LWC2** = numeric, length-weight regression coefficients, where wt = LWC1*len^LWC2, (wt in g, len in mm)

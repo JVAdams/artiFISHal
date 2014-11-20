@@ -10,7 +10,7 @@
 #' For 100\% selectivity of large fish, use MtL50Large = Inf and any slope. 
 #' Column names and descriptions:
 #' \itemize{
-#'   \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and lifestage) used in plotting
+#'   \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and life stage) used in plotting
 #'   \item \code{Zone} = character, mesh panel zone, one of "mouth", "middle", "aft", or "cod"
 #'   \item \code{MtL50Small} = the length (in mm) at which small fish have a 50\% probability of being captured by the trawl
 #'   \item \code{MtSlopeSmall} = the (inverse) slope at which small fish probability of capture increases with length, smaller values are steeper

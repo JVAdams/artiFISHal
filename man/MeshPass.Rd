@@ -32,8 +32,8 @@ MeshPass(BarMesh=2, H2WRatio=0.3, L2HRatio=4)
 MeshPass(BarMesh=2, H2WRatio=1/0.3, L2HRatio=4)
 }
 \references{
-This function is based on a modification of ellipse-based \href{http://www.mathworks.com/products/matlab/}{MATLAB} code provided by Kresimir Williams,
-\href{http://www.afsc.noaa.gov}{NOAA-AFSC}, at the Great Lakes Acoustic Users Group's Workshop on Trawl Performance,
-hosted by the \href{http://www.glfc.org/}{Great Lakes Fishery Commission}, 22-24 April 2014, in Ann Arbor, Michigan, USA.
+This function is based on a modification of MATLAB \href{http://www.mathworks.com/products/matlab/}{[link]} code provided by Kresimir Williams,
+NOAA-AFSC \href{http://www.afsc.noaa.gov}{afsc.noaa.gov}, at the Great Lakes Acoustic Users Group's Workshop on Trawl Performance,
+hosted by the Great Lakes Fishery Commission \href{http://www.glfc.org/}{glfc.org}, 22-24 April 2014, in Ann Arbor, Michigan, USA.
 }
 

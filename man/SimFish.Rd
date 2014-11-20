@@ -21,7 +21,7 @@ SimFish(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVertex = 2 *
 \item{BotDepVertex}{A numeric scalar, the vertical distance from the surface to the "vertex" of the lake bottom (in m), default \code{2*BotDepMax}.
 The "vertex" of the lake bottom is the point at which the angled lake beds along the west and east shores would intersect,
 were they not cut off first by the specified \code{BotDepMax}.
-View this \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/LakeFigures.JPG}{figure} for a diagram of the artificial lake.}
+View this figure \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/LakeFigures.JPG}{[link]} for a diagram of the artificial lake.}
 
 \item{FishParam}{A data frame with 18 columns in which each row describes a sub-population of fish to be placed in the artificial lake.
 The first 11 columns must be completely filled in (no missing values).
@@ -30,7 +30,7 @@ However, in each row, \strong{either} water depth (\code{WD} and \code{WDE}) \st
 \strong{must} be filled in, but \strong{not both}.
 Column names and descriptions:
 \itemize{
-  \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and lifestage) used in plotting
+  \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and life stage) used in plotting
   \item \code{Z} = numeric, mean length (in mm)
   \item \code{ZE} = numeric, error around mean length, expressed as SD/mean
   \item \code{LWC1}, \code{LWC2} = numeric, length-weight regression coefficients, where wt = LWC1*len^LWC2, (wt in g, len in mm)
@@ -81,8 +81,8 @@ which are used by \code{\link{SampFish}} in surveying the population,
 water depth \code{f.wdep}, distance to bottom \code{f.d2bot}, all in m), and
 fish size (total length in mm \code{len}, weight in g \code{wt}, and target strength in db \code{ts}); and
 	\item \code{PropExcluded}, a numeric vector showing the proportion of the requested number of fish, \code{TotNFish}, that were eliminated from
-the population based on their size (\code{LengthWeight}, \code{TS}) or
-location (\code{Easting}, \code{Northing}, \code{WaterDepth}, \code{BottomDepth}, \code{D2Shore}).
+the population based on their size (\code{len}, \code{wt}, \code{ts}) or
+location (\code{f.east}, \code{f.north}, \code{f.d2sh}, \code{f.botdep}, \code{f.wdep}).
 If you end up with far fewer fish than requested, this can be useful in troubleshooting where the problem might lie.
 }
 }
@@ -91,11 +91,11 @@ Create a simulated population of pelagic fish in an artificial lake.
 }
 \details{
 The artificial lake can be imagined as a rectangular subset of a "real" lake.
-The east and west boundaries of the artifical lake do not reach the shoreline of the "real" lake, unless \code{BotDepMin} is set to zero.
+The east and west boundaries of the artificial lake do not reach the shoreline of the "real" lake, unless \code{BotDepMin} is set to zero.
 The north and south boundaries of the artificial lake do not ascend to a shoreline,
 instead the bottom depth remains constant in the south-north direction (i.e., for a given easting).
 The angle of the western lake bed is twice as steep as the angle of the eastern lake bed.
-View the top and side views of the artificial lake in this \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/LakeFigures.JPG}{diagram}.
+View the top and side views of the artificial lake in this diagram \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/LakeFigures.JPG}{[link]}.
 
 You may wish to cap the total number of fish at 5 million if your computer has a memory of about 2 GB (2047 MB).
 This limit can be increased if you have more memory available in R.
@@ -121,8 +121,8 @@ fishp <- data.frame(
 	D2B = NA, D2BE = NA)
 
 # simulate the fish population
-res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000, BotDepMin=20, BotDepMax=100,
-	FishParam=fishp, TotNFish=1000, Seed=667)
+res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000,
+	BotDepMin=20, BotDepMax=100, FishParam=fishp, TotNFish=1000, Seed=667)
 
 # look at the results
 res$Truth
@@ -138,7 +138,7 @@ res$PropExcluded
 Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.
 Evaluating analytical approaches for estimating pelagic fish biomass using simulated fish communities.
 Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.
-\strong{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}
+\emph{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}
 }
 \seealso{
 \code{\link{SampFish}}

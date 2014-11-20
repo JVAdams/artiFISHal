@@ -25,9 +25,9 @@ prednode(fit, kyphosis)
 }
 }
 \references{
-This function is a modification of an approach suggested in a \href{http://tolstoy.newcastle.edu.au/R/e4/help/08/07/17702.html}{post} to the
+This function is a modification of an approach suggested in a post \href{http://tolstoy.newcastle.edu.au/R/e4/help/08/07/17702.html}{[link]} to the
 R-help mailing list on 22 July 2008 by
-\href{http://www.stats.ox.ac.uk/~ripley/}{Brian D. Ripley}, Professor of Applied Statistics, University of Oxford, Oxford, UK.
+Brian D. Ripley \href{http://www.stats.ox.ac.uk/~ripley/}{[link]}, Professor of Applied Statistics, University of Oxford, Oxford, UK.
 }
 \seealso{
 \code{\link[rpart]{rpart}}, \code{\link[rpart]{predict.rpart}}

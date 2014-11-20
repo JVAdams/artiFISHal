@@ -15,7 +15,7 @@
 #' @param MtLen			A numeric scalar, length (distance) of midwater trawl haul (in m).
 #' @param MtMinCat		An integer scalar, the minimum catch (number of fish) per midwater trawl tow, default 2.  
 #' Tows capturing fewer than \code{MtMinCat} fish will be tossed out.
-#' @param MtMulti		An integer scalar, the initial number of midwater trawl tows is mulitplied by this scalar
+#' @param MtMulti		An integer scalar, the initial number of midwater trawl tows is multiplied by this scalar
 #' in an attempt to achieve the target number of tows, \code{MtNum}, even after eliminating those tows that extend beyond the boundaries of the lake 
 #' or those with fewer than \code{MtMinCat}, default 6.
 #' @param PlotsPdf		A character scalar, name of pdf file to store the diagnostic plots in.  If NA, the default, 
@@ -33,7 +33,7 @@
 #'   \item \code{MtCatch} is a data frame with information on the fish captured in the virtual midwater trawl survey.  Each row represents
 #' a single fish, columns describe the specific location of the trawl and the group and size of the fish.  Seven columns are included
 #' that would not be available in a real midwater trawl survey: the specific location of the fish 
-#' (\code{f.east}, \code{f.north}, \code{f.d2sh}, \code{f.botdep}, \code{f.wdep}, \code{f.d2bot}) and their target strenghs (\code{ts}).
+#' (\code{f.east}, \code{f.north}, \code{f.d2sh}, \code{f.botdep}, \code{f.wdep}, \code{f.d2bot}) and their target strengths (\code{ts}).
 #' }
 #'
 #' @details
@@ -62,12 +62,12 @@
 #' Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.  
 #' Evaluating analytical approaches for estimating pelagic fish biomass using simulated fish communities. 
 #' Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.
-#' \strong{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}
+#' \emph{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}
 #' 
-#' Yule, DL.  2000.  
-#' \href{http://www.tandfonline.com/doi/abs/10.1577/1548-8675(2000)020%3C0759%3ACOHAAP%3E2.3.CO%3B2}{Comparison 
-#' of horizontal acoustic and purse-seine estimates of salmonid densities and sizes in eleven Wyoming waters}. 
+#' Yule, DL.  2000.  Comparison of horizontal acoustic and purse-seine estimates of 
+#' salmonid densities and sizes in eleven Wyoming waters
 #' North American Journal of Fisheries Management 20:759-775.
+#' \emph{http://www.tandfonline.com/doi/abs/10.1577/1548-8675(2000)020\%3C0759\%3ACOHAAP\%3E2.3.CO\%3B2}
 #'
 #' @examples
 #'
@@ -84,11 +84,12 @@
 #' 	D2B = NA, D2BE = NA)
 #' 
 #' # simulate the fish population
-#' res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000, BotDepMin=20, BotDepMax=100, 
-#' 	FishParam=fishp, TotNFish=50000, Seed=667)
+#' res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000, 
+#'	BotDepMin=20, BotDepMax=100, FishParam=fishp, TotNFish=50000, Seed=667)
 #'
 #' # survey the population
-#' surv <- SampFish(SimPop=res, NumEvents=2, AcNum=5, AcInterval=3000, AcLayer=10, AcAngle=7, MtNum=25, MtHt=10, MtWd=10, MtLen=200, Seed=545)
+#' surv <- SampFish(SimPop=res, NumEvents=2, AcNum=5, AcInterval=3000, 
+#'	AcLayer=10, AcAngle=7, MtNum=25, MtHt=10, MtWd=10, MtLen=200, Seed=545)
 #'
 #' # look at the results
 #' surv$SurvParam

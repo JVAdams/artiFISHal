@@ -32,7 +32,7 @@ For 100\% selectivity of small fish, use \code{MtL50Small = -Inf} and any slope.
 For 100\% selectivity of large fish, use \code{MtL50Large = Inf} and any slope.
 Column names and descriptions:
 \itemize{
-  \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and lifestage) used in plotting
+  \item \code{G} = character, a one-letter nickname for the group (e.g., fish species and life stage) used in plotting
   \item \code{Zone} = character, mesh panel zone, one of "mouth", "middle", "aft", or "cod"
   \item \code{MtL50Small} = numeric, the length (in mm) at which small fish have a 50\% probability of being captured by the trawl
   \item \code{MtSlopeSmall} = numeric, the (inverse) slope at which small fish probability of capture increases with length, smaller values are steeper
@@ -71,11 +71,12 @@ fishp <- data.frame(
 	D2B = NA, D2BE = NA)
 
 # simulate the fish population
-res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000, BotDepMin=20, BotDepMax=100,
-	FishParam=fishp, TotNFish=50000)
+res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000,
+	BotDepMin=20, BotDepMax=100, FishParam=fishp, TotNFish=50000)
 
 # survey the population
-surv <- SampFish(SimPop=res, NumEvents=2, AcNum=5, AcInterval=3000, AcLayer=10, AcAngle=7, MtNum=25, MtHt=10, MtWd=10, MtLen=200)
+surv <- SampFish(SimPop=res, NumEvents=2, AcNum=5, AcInterval=3000,
+	AcLayer=10, AcAngle=7, MtNum=25, MtHt=10, MtWd=10, MtLen=200)
 
 selec <- data.frame(
 	G = c("A", "a", "A", "a", "A", "a"),
@@ -86,13 +87,14 @@ selec <- data.frame(
 	MtSlopeLarge = c(20, 20, 100, 100, 100, 100))
 
 AcMtEst(SimPop=res, AcMtSurv=surv, Seed=927)
-AcMtEst(SimPop=res, AcMtSurv=surv, AcExcl=c(5, 10), MtExcl=c(2, 2), SelecParam=selec, Seed=204)
+AcMtEst(SimPop=res, AcMtSurv=surv, AcExcl=c(5, 10),
+	MtExcl=c(2, 2), SelecParam=selec, Seed=204)
 }
 \references{
 Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.
 Evaluating analytical approaches for estimating pelagic fish biomass using simulated fish communities.
 Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.
-\strong{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}
+\emph{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}
 }
 \seealso{
 \code{\link{SimFish}}, \code{\link{SampFish}}, \code{\link{ViewZones}}, \code{\link{TuneSelec}}.
