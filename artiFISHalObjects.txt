@@ -1,0 +1,13 @@
+
+cleanup()
+
+# ASCII fish for warning and error messages
+fisherr <- paste0(
+	"\n",
+	"#                     \n",
+	"#       O             \n",
+	"#        o            \n",
+	"#  ><(((>   artiFISHal\n",
+	"#                     \n")
+
+save(list=ls(all=FALSE), file="C:/JVA/GitHub/artiFISHal/data/misc.RData")

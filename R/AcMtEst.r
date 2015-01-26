@@ -106,7 +106,7 @@ AcMtEst <- function(SimPop, AcMtSurv, AcExcl=c(0, 0), MtExcl=c(0, 0), PanelProps
 	# check validity of the trawl zone proportions that were input
 	names(PanelProps) <- c("mouth", "middle", "aft", "cod")
 	panelprops <- rev(PanelProps)
-	if(round(sum(panelprops), 0.0000001) != 1) stop("cod proportions should sum to 1")
+	if(round(sum(panelprops), 7) != 1) stop("cod proportions should sum to 1", fisherr)
 
 	# availability function, = 0 at surface and bottom and = 1 in the middle
 	dblcut <- function(wdep, surfacecut, d2bot, bottomcut) {
@@ -137,11 +137,11 @@ AcMtEst <- function(SimPop, AcMtSurv, AcExcl=c(0, 0), MtExcl=c(0, 0), PanelProps
 	suz <- c("mouth", "middle", "aft", "cod")
 	uz <- unique(SelecParam$Zone)
 	badzones <- setdiff(uz, suz)
-	if(length(badzones) > 0) stop('Zones must be one of "mouth", "middle", "aft", or "cod".')
+	if(length(badzones) > 0) stop('Zones must be one of "mouth", "middle", "aft", or "cod".', fisherr)
 
 	# check for missings
 	missings <- sum(is.na(SelecParam))
-	if(missings > 0) stop("SelectParam data frame may not have any missing values.")
+	if(missings > 0) stop("SelectParam data frame may not have any missing values.", fisherr)
 
 	# fill in 100% selectivities for group-zones with no parameters
 	sug <- sort(unique(AcMtSurv$MtCatch$G))

@@ -27,7 +27,7 @@
 #' 
 
 MeshPass <- function(BarMesh, H2WRatio, L2HRatio=NA, Plot=TRUE) {
-	if(length(BarMesh)!=1 | length(H2WRatio)!=1 | length(L2HRatio)!=1 | length(Plot)!=1) stop("All arguments to the MeshPass() function should be scalars of length 1.")
+	if(length(BarMesh)!=1 | length(H2WRatio)!=1 | length(L2HRatio)!=1 | length(Plot)!=1) stop("All arguments to the MeshPass() function should be scalars of length 1.", fisherr)
 	hwr <- 1/H2WRatio
 	# half width of partially open mesh
 	W <- BarMesh / sqrt(1 + hwr^2)

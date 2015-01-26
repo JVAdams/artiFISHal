@@ -158,7 +158,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 	look <- FishParam[, c("WD", "D2B")]
 	not1na <- apply(is.na(look), 1, sum) != 1
 	if(sum(not1na)>0) stop(paste("Rows ", paste(seq_along(not1na)[not1na], collapse=", "), 
-		".  Either a mean water depth or a mean distance to bottom MUST be specified, but NOT BOTH!", sep=""))
+		".  Either a mean water depth or a mean distance to bottom MUST be specified, but NOT BOTH!", sep=""), fisherr)
 
 	nrowz <- dim(FishParam)[1]
 	start.i <- (c(0, cumsum(FishParam$Nfish))+1)[1:nrowz]

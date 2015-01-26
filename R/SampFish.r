@@ -172,7 +172,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle, M
 		# make sure acoustic transect cones don't overlap
 		mindist.allowed <- SimPop$LakeInfo$BotDepMax*tan(pi*AcAngle/2/360)
 		mindist.observed <- min(diff(sort(ACnorth)))
-		if(mindist.observed < mindist.allowed) warning("Acoustic transects are too close together.\nTry again with fewer acoustic transects.")
+		if(mindist.observed < mindist.allowed) warning("Acoustic transects are too close together.\nTry again with fewer acoustic transects.", fisherr)
 		}
 
 	# make sure that all of the acoustic transects are kept ... even if they have no midwater trawls associated with them
@@ -220,7 +220,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle, M
 			if(ACsampinfo$ACnorth[j] > (northr[2] - cushion) | ACsampinfo$ACnorth[j] < (northr[1] + cushion)) 
 				warning(paste("\nACid = ", ACsampinfo$ACid[j], ", ACnorth = ", ACsampinfo$ACnorth[j], 
 					": \nThe cone of the acoustic slice extends farther north or south \nthan the boundary of our simulated lake.",
-					"  \nTry again using a different Seed or using fewer acoustic transects."))
+					"  \nTry again using a different Seed or using fewer acoustic transects."), fisherr)
 			sel <- (abs(SimPop$Fish$f.north - ACsampinfo$ACnorth[j])) < (SimPop$Fish$f.wdep*tan(half.cone.rad))
 
 			if(sum(sel)>0) {
