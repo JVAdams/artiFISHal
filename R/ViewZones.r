@@ -25,7 +25,7 @@
 
 ViewZones <- function(PanelProps=c(0.4, 0.3, 0.2, 0.1)) {
 	# check validity of the trawl zone proportions that were input
-	if(round(sum(PanelProps), 7) != 1) stop("Panel proportions should sum to 1.", fisherr)
+	if(round(sum(PanelProps), 7) != 1) stop("Panel proportions should sum to 1.")
 
 	mouth.edge <- 1
 	middle.edge <- 1 - PanelProps[1]

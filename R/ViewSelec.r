@@ -19,6 +19,7 @@
 #' }
 #'
 #' @export
+#' @import jvamisc
 #' @seealso \code{\link{AcMtEst}}, \code{\link{logit2}}
 #' @examples
 #' \dontrun{
@@ -40,11 +41,11 @@ ViewSelec <- function(SelecParam) {
 	suz <- c("mouth", "middle", "aft", "cod")
 	uz <- unique(SelecParam$Zone)
 	badzones <- setdiff(uz, suz)
-	if(length(badzones) > 0) stop('Zones must be one of "mouth", "middle", "aft", or "cod".', fisherr)
+	if(length(badzones) > 0) stop('Zones must be one of "mouth", "middle", "aft", or "cod".')
 
 	# check for missings
 	missings <- sum(is.na(SelecParam))
-	if(missings > 0) stop("SelectParam data frame may not have any missing values.", fisherr)
+	if(missings > 0) stop("SelectParam data frame may not have any missing values.")
 
 	# calculate lengths at small probabilities for plotting limits
 	smallp <- 0.01

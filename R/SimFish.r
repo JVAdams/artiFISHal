@@ -6,14 +6,14 @@
 #' @param LkLength		A numeric scalar, the length of the lake in the south-north direction (in m).
 #' @param BotDepMin		A numeric scalar, the minimum bottom depth of the lake, at both the west and east shorelines (in m).
 #' @param BotDepMax		A numeric scalar, the maximum bottom depth of the lake (in m).
-#' @param BotDepVertex	A numeric scalar, the vertical distance from the surface to the "vertex" of the lake bottom (in m), default \code{2*BotDepMax}.  
+#' @param BotDepVertex	A numeric scalar, the vertical distance from the surface to the "vertex" of the lake bottom (in m), default \code{2*BotDepMax}.
 #' The "vertex" of the lake bottom is the point at which the angled lake beds along the west and east shores would intersect,
-#' were they not cut off first by the specified \code{BotDepMax}.  
+#' were they not cut off first by the specified \code{BotDepMax}.
 #' View this figure \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/LakeFigures.JPG}{[link]} for a diagram of the artificial lake.
 #' @param FishParam		A data frame with 18 columns in which each row describes a sub-population of fish to be placed in the artificial lake.
 #' The first 11 columns must be completely filled in (no missing values).
-#' The last 8 columns may have some missing values.  
-#' However, in each row, \strong{either} water depth (\code{WD} and \code{WDE}) \strong{or} distance to bottom (\code{D2B} and \code{D2BE}) 
+#' The last 8 columns may have some missing values.
+#' However, in each row, \strong{either} water depth (\code{WD} and \code{WDE}) \strong{or} distance to bottom (\code{D2B} and \code{D2BE})
 #' \strong{must} be filled in, but \strong{not both}.
 #' Column names and descriptions:
 #' \itemize{
@@ -34,22 +34,22 @@
 #'   \item \code{D2B} = numeric, mean distance to bottom (m)
 #'   \item \code{D2BE} = numeric, error around distance to bottom, expressed as SD/mean
 #' }
-#' @param TotNFish		A numeric scalar indicating the target number of fish to put in the lake.  
+#' @param TotNFish		A numeric scalar indicating the target number of fish to put in the lake.
 #' The actual number of fish in the population will likely be smaller than \code{TotNFish}, because the process used to populate the lake with fish
 #' ends up with some fish out of water (beyond the boundaries of the artificial lake), which are then removed from the population.
 #' Memory on your computer limits the size of \code{TotNFish} (see Details).
 #' @param TSRange		A numeric vector of length 2, the range of target strengths to use for the fish (in db), default c(-65, -20).
-#' @param PlotsPdf		A character scalar, name of pdf file to store the diagnostic plots in.  If NA, the default, 
+#' @param PlotsPdf		A character scalar, name of pdf file to store the diagnostic plots in.  If NA, the default,
 #' plots are displayed on the screen instead.  If FALSE, no plots are created.
-#' @param Seed			An integer scalar, starting seed for stochasticity incorporated in fish population generation.  
-#' Use \code{Seed} to ensure the same population is generated with each call to \code{SimFish}.  
-#' Otherwise, if set to NULL, the default, a random seed is used, resulting in a different population with each call to \code{SimFish}.  
+#' @param Seed			An integer scalar, starting seed for stochasticity incorporated in fish population generation.
+#' Use \code{Seed} to ensure the same population is generated with each call to \code{SimFish}.
+#' Otherwise, if set to NULL, the default, a random seed is used, resulting in a different population with each call to \code{SimFish}.
 #'
 #' @return 				A list with 6 elements:
 #' \itemize{
-#' 	\item \code{Truth}, a data frame with the total number and weight 
-#' of each fish group in the population; 
-#' 	\item \code{LakeInfo}, a list with the lake inputs supplied as arguments to \code{SimFish} as well as a few additional objects 
+#' 	\item \code{Truth}, a data frame with the total number and weight
+#' of each fish group in the population;
+#' 	\item \code{LakeInfo}, a list with the lake inputs supplied as arguments to \code{SimFish} as well as a few additional objects
 #' which are used by \code{\link{SampFish}} in surveying the population,
 #' 		\itemize{
 #'   		\item \code{ints} = a numeric vector of length 2, the intercepts of the angled lake beds along the west and east shores of the lake (in m)
@@ -58,39 +58,39 @@
 #' 		}
 #' 	\item \code{FishInfo}, a list with the fish inputs supplied as arguments to \code{SimFish};
 #' 	\item \code{FishParam}, the data frame supplied as an argument to \code{SimFish};
-#' 	\item \code{FishPop}, a data frame in which each row is a fish, and 10 columns describe the fish group (\code{G}), location 
-#' (easting \code{f.east}, northing \code{f.north}, distance to shore \code{f.d2sh}, bottom depth \code{f.botdep}, 
-#' water depth \code{f.wdep}, distance to bottom \code{f.d2bot}, all in m), and 
+#' 	\item \code{FishPop}, a data frame in which each row is a fish, and 10 columns describe the fish group (\code{G}), location
+#' (easting \code{f.east}, northing \code{f.north}, distance to shore \code{f.d2sh}, bottom depth \code{f.botdep},
+#' water depth \code{f.wdep}, distance to bottom \code{f.d2bot}, all in m), and
 #' fish size (total length in mm \code{len}, weight in g \code{wt}, and target strength in db \code{ts}); and
 #' 	\item \code{PropExcluded}, a numeric vector showing the proportion of the requested number of fish, \code{TotNFish}, that were eliminated from
-#' the population based on their size (\code{len}, \code{wt}, \code{ts}) or 
+#' the population based on their size (\code{len}, \code{wt}, \code{ts}) or
 #' location (\code{f.east}, \code{f.north}, \code{f.d2sh}, \code{f.botdep}, \code{f.wdep}).
 #' If you end up with far fewer fish than requested, this can be useful in troubleshooting where the problem might lie.
 #' }
 #'
 #' @details
 #'
-#' The artificial lake can be imagined as a rectangular subset of a "real" lake.  
+#' The artificial lake can be imagined as a rectangular subset of a "real" lake.
 #' The east and west boundaries of the artificial lake do not reach the shoreline of the "real" lake, unless \code{BotDepMin} is set to zero.
-#' The north and south boundaries of the artificial lake do not ascend to a shoreline, 
+#' The north and south boundaries of the artificial lake do not ascend to a shoreline,
 #' instead the bottom depth remains constant in the south-north direction (i.e., for a given easting).
 #' The angle of the western lake bed is twice as steep as the angle of the eastern lake bed.
 #' View the top and side views of the artificial lake in this diagram \href{https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/LakeFigures.JPG}{[link]}.
 #'
-#' You may wish to cap the total number of fish at 5 million if your computer has a memory of about 2 GB (2047 MB).  
+#' You may wish to cap the total number of fish at 5 million if your computer has a memory of about 2 GB (2047 MB).
 #' This limit can be increased if you have more memory available in R.
 #' You can check the memory available with \code{\link{memory.limit}}.
 #'
-#' The diagnostic plots produced, if \code{PlotsPdf} is not FALSE, include 
-#' scatterplots of 1,000 fish randomly selected from the population, scatterplots of 250 fish randomly selected from each group, 
+#' The diagnostic plots produced, if \code{PlotsPdf} is not FALSE, include
+#' scatterplots of 1,000 fish randomly selected from the population, scatterplots of 250 fish randomly selected from each group,
 #' and histograms of the size and spatial distribution of all the fish in the lake.
 #'
 #' @export
-#' @import 				MASS
+#' @import 				MASS jvamisc
 #' @seealso \code{\link{SampFish}}
-#' @references Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.  
-#' Evaluating analytical approaches for estimating pelagic fish biomass using simulated fish communities. 
-#' Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.  
+#' @references Yule, DL, JV Adams, DM Warner, TR Hrabik, PM Kocovsky, BC Weidel, LG Rudstam, and PJ Sullivan.  2013.
+#' Evaluating analytical approaches for estimating pelagic fish biomass using simulated fish communities.
+#' Canadian Journal of Fisheries and Aquatic Sciences 70:1845-1857.
 #' \emph{http://www.nrcresearchpress.com/doi/abs/10.1139/cjfas-2013-0072#.U1KYxPldXTQ}
 #'
 #' @examples
@@ -98,18 +98,18 @@
 #'
 #' # parameters for small (a) and large (A) alewife as input to the simulator
 #' fishp <- data.frame(
-#' 	G = c("a", "A", "A"), 
-#' 	Z = c(50, 140, 140), ZE = c(0.25, 0.2, 0.2), 
-#' 	LWC1 = 0.000014, LWC2 = 2.8638, LWCE = 0.18, 
-#' 	TSC1 = -64.2, TSC2 = 20.5, TSCE = c(0.02, 0.07, 0.07), 
-#' 	PropN = c(0.55, 0.25, 0.20), 
-#' 	E = c(NA, 900, 2800), EE = c(NA, 4.5, 0.3), 
-#' 	N = NA, NE = NA, 
-#' 	WD = c(5, 15, 15), WDE = c(0.5, 0.7, 0.7), 
+#' 	G = c("a", "A", "A"),
+#' 	Z = c(50, 140, 140), ZE = c(0.25, 0.2, 0.2),
+#' 	LWC1 = 0.000014, LWC2 = 2.8638, LWCE = 0.18,
+#' 	TSC1 = -64.2, TSC2 = 20.5, TSCE = c(0.02, 0.07, 0.07),
+#' 	PropN = c(0.55, 0.25, 0.20),
+#' 	E = c(NA, 900, 2800), EE = c(NA, 4.5, 0.3),
+#' 	N = NA, NE = NA,
+#' 	WD = c(5, 15, 15), WDE = c(0.5, 0.7, 0.7),
 #' 	D2B = NA, D2BE = NA)
-#' 
+#'
 #' # simulate the fish population
-#' res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000, 
+#' res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000,
 #'	BotDepMin=20, BotDepMax=100, FishParam=fishp, TotNFish=1000, Seed=667)
 #'
 #' # look at the results
@@ -119,10 +119,10 @@
 #' head(res$FishParam)
 #' head(res$Fish)
 #' res$PropExcluded
-#' 
+#'
 #' }
 
-SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVertex=2*BotDepMax, 
+SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVertex=2*BotDepMax,
 	FishParam, TotNFish, TSRange=c(-65, -20), PlotsPdf=NA, Seed=NULL) {
 
 	if(!is.na(PlotsPdf) & PlotsPdf!=FALSE) pdf(PlotsPdf, width=9, height=6.5, title="Diagnostics", paper="USr")
@@ -157,16 +157,16 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 	# check that exactly ONE of these two variables (WD, D2B) were set to NA
 	look <- FishParam[, c("WD", "D2B")]
 	not1na <- apply(is.na(look), 1, sum) != 1
-	if(sum(not1na)>0) stop(paste("Rows ", paste(seq_along(not1na)[not1na], collapse=", "), 
-		".  Either a mean water depth or a mean distance to bottom MUST be specified, but NOT BOTH!", sep=""), fisherr)
+	if(sum(not1na)>0) stop(paste("Rows ", paste(seq_along(not1na)[not1na], collapse=", "),
+		".  Either a mean water depth or a mean distance to bottom MUST be specified, but NOT BOTH!", sep=""))
 
 	nrowz <- dim(FishParam)[1]
 	start.i <- (c(0, cumsum(FishParam$Nfish))+1)[1:nrowz]
 	end.i <- cumsum(FishParam$Nfish)
-	 
+
 	totfish <- sum(FishParam$Nfish)
 
-	fish <- data.frame(G=rep(FishParam$G, FishParam$Nfish), f.east=NA, f.north=NA, f.d2sh=NA, f.botdep=NA, f.wdep=NA, f.d2bot=NA, 
+	fish <- data.frame(G=rep(FishParam$G, FishParam$Nfish), f.east=NA, f.north=NA, f.d2sh=NA, f.botdep=NA, f.wdep=NA, f.d2bot=NA,
 		len=NA, wt=NA, ts=NA)
 	if(!is.null(Seed)) set.seed(Seed)
 	for(i in seq(nrowz)) {
@@ -225,22 +225,26 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 	n <- dim(fish)[1]
 
 	# if you are losing a lot of fish, you can use this to try and determine why
-	PropExcluded <- c(LengthWeight=sum(bad.lenwt), TS=sum(bad.ts), Easting=sum(bad.east), Northing=sum(bad.north), WaterDepth=sum(bad.wdep), 
+	PropExcluded <- c(LengthWeight=sum(bad.lenwt), TS=sum(bad.ts), Easting=sum(bad.east), Northing=sum(bad.north), WaterDepth=sum(bad.wdep),
 		BottomDepth=sum(bad.botdep), D2Shore=sum(bad.d2sh))/n
 
 	# get rid of rows that are beyond the bounds we set or that have other problems
 	bad <- bad.d2sh | bad.east | bad.north | bad.botdep | bad.wdep | bad.lenwt | bad.ts
 	fish <- fish[!bad, ]
 
-	
-	
+
+
 	###  diagnostic plots  ###
 	if(is.na(PlotsPdf) | PlotsPdf!=FALSE) {
 
 		# a random selection of 1,000 fish (total)
 		n <- dim(fish)[1]
-		pick <- if(n<1001) 1:n else sample(1:n, 1000)
-		
+		pick <- if (n<1001) {
+      1:n
+		} else {
+      sample(1:n, 1000)
+		}
+
 		fpick <- fish[pick, ]
 
 		sug <- sort(unique(fpick$G))
@@ -248,7 +252,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		if(is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
 		plotblank(eastr/1000, c(-BotDepMax, 0), xlab="Easting  (km)", ylab="Water depth  (m)", main=paste(LakeName, "- Side View"))
-		lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints, slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000, 
+		lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints, slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000,
 			-c(botdepr[1], rep(BotDepMax, 2), botdepr[1], 0, 0, botdepr[1]))
 
 		for(i in seq(along=sug)) {
@@ -264,13 +268,13 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 			text(fpick$f.east[sel]/1000, fpick$f.north[sel]/1000, fpick$G[sel], col=i)
 			}
 
-		
-		
+
+
 		# a random selection of 250 fish from each group
 
 		rows.g <- split(seq(along=fish$G), fish$G)
 		pick <- unlist(lapply(rows.g, function(x) sample(x, min(250, length(x)))))
-		
+
 		fpick <- fish[pick, ]
 
 		sug <- sort(unique(fpick$G))
@@ -280,7 +284,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		for(i in seq(along=sug)) {
 			sel <- fpick$G==sug[i]
 			plotblank(eastr/1000, c(-BotDepMax, 0))
-			lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints, slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000, 
+			lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints, slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000,
 				-c(botdepr[1], rep(BotDepMax, 2), botdepr[1], 0, 0, botdepr[1]))
 			text(fpick$f.east[sel]/1000, -fpick$f.wdep[sel], fpick$G[sel], col=i)
 			}
@@ -327,7 +331,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 		mtext(paste(LakeName, "- Length-Weight Relation"), side=3, outer=TRUE, font=2)
 
 
-		
+
 		# histograms of all fish
 
 		fishhist <- function(x, xlab, title, ...) {
@@ -371,11 +375,11 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax, BotDepVer
 
 	# output selected objects for use in sampling programs
 	list(
-		Truth = truth, 
-		LakeInfo = list(LakeName=LakeName, LkWidth=LkWidth, LkLength=LkLength, 
+		Truth = truth,
+		LakeInfo = list(LakeName=LakeName, LkWidth=LkWidth, LkLength=LkLength,
 			BotDepMin=BotDepMin, BotDepMax=BotDepMax, BotDepVertex=BotDepVertex,
-			ints=ints, slopes=slopes, d2shr.we=d2shr.we), 
-		FishInfo = list(TotNFish=TotNFish, TSRange=TSRange, Seed=Seed), 
+			ints=ints, slopes=slopes, d2shr.we=d2shr.we),
+		FishInfo = list(TotNFish=TotNFish, TSRange=TSRange, Seed=Seed),
 		FishParam = FishParam,
 		Fish = fish,
 		PropExcluded = PropExcluded
