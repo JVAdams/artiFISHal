@@ -336,8 +336,12 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
 		f <- first(mtr.indx.sort$Event)
 		x <- rep(NA, length(f))
 		for(ix in 1:length(f)) {
-			x[ix] <- if (f[ix]==1) 1 else x[ix-1]+1
+			x[ix] <- if (f[ix]==1) {
+        1
+      } else {
+        x[ix-1]+1
 			}
+		}
 		mtr.indx.sort$mtr.count <- x
 		# keep the first MtNum trawls in each event
 		mtr.indx.keep <- mtr.indx.sort[mtr.indx.sort$mtr.count <= MtNum, ]

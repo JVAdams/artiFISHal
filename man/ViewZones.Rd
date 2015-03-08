@@ -7,16 +7,20 @@
 ViewZones(PanelProps = c(0.4, 0.3, 0.2, 0.1))
 }
 \arguments{
-\item{PanelProps}{A numeric vector of length 4, size of the different mesh panel zones of the midwater trawl,
-mouth (outermost), middle, aft, and cod (inner), default c(0.4, 0.3, 0.2, 0.1).
-Sizes are expressed as proportions of the distance from the outer edge of the trawl to the trawl center in both the vertical and horizontal directions,
-and they should add up to 1.}
+\item{PanelProps}{A numeric vector of length 4, size of the different mesh panel zones of
+  the midwater trawl, mouth (outermost), middle, aft, and cod (inner),
+  default c(0.4, 0.3, 0.2, 0.1).
+  Sizes are expressed as proportions of the distance from the outer edge of
+  the trawl to the trawl center in both the vertical and
+  horizontal directions, and they should add up to 1.}
 }
 \description{
-Draw a diagram displaying the sizes of the mesh panel zones of a midwater trawl.
+Draw a diagram displaying the sizes of the mesh panel zones of a midwater
+trawl.
 }
 \details{
-A diagram is produced giving a view of the midwater trawl mesh panel zones (drawn to scale) from the perspective a fish
+A diagram is produced giving a view of the midwater trawl mesh panel zones
+(drawn to scale) from the perspective a fish
 located directly in the center of the oncoming trawl path.
 }
 \examples{

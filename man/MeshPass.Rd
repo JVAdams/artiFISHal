@@ -9,23 +9,28 @@ MeshPass(BarMesh, H2WRatio, L2HRatio = NA, Plot = TRUE)
 \arguments{
 \item{BarMesh}{A numeric scalar, the length of one side of a square mesh (in inches).}
 
-\item{H2WRatio}{A numeric scalar, the ratio of the height (vertex to vertex) of a single square mesh (oriented as a diamond)
-to its width (vertex to vertex).}
+\item{H2WRatio}{A numeric scalar, the ratio of the height (vertex to vertex) of a single
+square mesh (oriented as a diamond) to its width (vertex to vertex).}
 
-\item{L2HRatio}{A numeric scalar, > 1, the ratio of the length of a fish to its height (or depth).  If set to NA, the default,
-no length calculations will be done.}
+\item{L2HRatio}{A numeric scalar, > 1, the ratio of the length of a fish to its height
+(or depth).
+If set to NA, the default, no length calculations will be done.}
 
-\item{Plot}{A logical scalar, indicating if a diagram (drawn to scale) of the mesh and the largest fish should be shown, default TRUE.}
+\item{Plot}{A logical scalar, indicating if a diagram (drawn to scale) of the mesh and
+  the largest fish should be shown, default TRUE.}
 }
 \value{
-A named vector with 2 elements: fish height (in inches) and fish length (in mm).
+A named vector with 2 elements: fish height (in inches) and fish length
+  (in mm).
 }
 \description{
-Determine the largest height (or depth) of a fish that can pass through a single diamond-shaped mesh of a net.
+Determine the largest height (or depth) of a fish that can pass through a
+single diamond-shaped mesh of a net.
 }
 \details{
-The cross sectional shape of the fish (looking it right in the nose) is assumed to be a geometric shape similar to an ellipse,
-two vertically-oriented tangential circles of equal size (like a figure 8).
+The cross sectional shape of the fish (looking it right in the nose) is
+  assumed to be a geometric shape similar to an ellipse,
+  two vertically-oriented tangential circles of equal size (like a figure 8).
 }
 \examples{
 MeshPass(BarMesh=2, H2WRatio=0.3)
@@ -33,8 +38,13 @@ MeshPass(BarMesh=2, H2WRatio=0.3, L2HRatio=4)
 MeshPass(BarMesh=2, H2WRatio=1/0.3, L2HRatio=4)
 }
 \references{
-This function is based on a modification of MATLAB \href{http://www.mathworks.com/products/matlab/}{[link]} code provided by Kresimir Williams,
-NOAA-AFSC \href{http://www.afsc.noaa.gov}{afsc.noaa.gov}, at the Great Lakes Acoustic Users Group's Workshop on Trawl Performance,
-hosted by the Great Lakes Fishery Commission \href{http://www.glfc.org/}{glfc.org}, 22-24 April 2014, in Ann Arbor, Michigan, USA.
+This function is based on a modification of MATLAB
+\href{http://www.mathworks.com/products/matlab/}{[link]}
+code provided by Kresimir Williams,
+NOAA-AFSC \href{http://www.afsc.noaa.gov}{afsc.noaa.gov},
+at the Great Lakes Acoustic Users Group's Workshop on Trawl Performance,
+hosted by the Great Lakes Fishery Commission
+\href{http://www.glfc.org/}{glfc.org}, 22-24 April 2014, in
+Ann Arbor, Michigan, USA.
 }
 
