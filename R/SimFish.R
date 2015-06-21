@@ -72,8 +72,7 @@
 #'   the fish (in db), default c(-65, -20).
 #' @param PlotsPdf
 #'   A character scalar, name of pdf file to store the diagnostic plots in.
-#'   If NA, the default, plots are displayed on the screen instead.
-#'   If FALSE, no plots are created.
+#'   If FALSE, the default, no plots are created.
 #' @param Seed
 #'   An integer scalar, starting seed for stochasticity incorporated in fish
 #'   population generation.
@@ -144,7 +143,7 @@
 #'
 #' @export
 #' @import
-#'   MASS jvamisc
+#'   MASS
 #' @seealso
 #'   \code{\link{SampFish}}
 #' @references
@@ -187,9 +186,12 @@
 
 SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax,
   BotDepVertex=2*BotDepMax,	FishParam, TotNFish, TSRange=c(-65, -20),
-  PlotsPdf=NA, Seed=NULL) {
+  PlotsPdf=FALSE, Seed=NULL) {
 
-	if (!is.na(PlotsPdf) & PlotsPdf!=FALSE) {
+  if (is.na(PlotsPdf) | length(PlotsPdf)!=1 | is.numeric(PlotsPdf)) {
+    stop("PlotsPdf must be either a character scalar, or FALSE")
+  }
+	if (PlotsPdf!=FALSE) {
     pdf(PlotsPdf, width=9, height=6.5, title="Diagnostics", paper="USr")
 	}
 
@@ -318,7 +320,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax,
 
 
 	###  diagnostic plots  ###
-	if (is.na(PlotsPdf) | PlotsPdf!=FALSE) {
+	if (PlotsPdf!=FALSE) {
 
 		# a random selection of 1,000 fish (total)
 		n <- dim(fish)[1]
@@ -332,9 +334,8 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax,
 
 		sug <- sort(unique(fpick$G))
 
-		if (is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-		plotblank(eastr/1000, c(-BotDepMax, 0), xlab="Easting  (km)",
+		plot(eastr/1000, c(-BotDepMax, 0), type="n", las=1, xlab="Easting  (km)",
       ylab="Water depth  (m)", main=paste(LakeName, "- Side View"))
 		lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints,
       slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000,
@@ -345,9 +346,8 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax,
 			text(fpick$f.east[sel]/1000, -fpick$f.wdep[sel], fpick$G[sel], col=i)
 		}
 
-		if (is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-		plotblank(eastr/1000, northr/1000, xlab="Easting  (km)",
+		plot(eastr/1000, northr/1000, type="n", las=1, xlab="Easting  (km)",
       ylab="Northing  (km)", main=paste(LakeName, "- Top View"))
 		for(i in seq(along=sug)) {
 			sel <- fpick$G==sug[i]
@@ -365,11 +365,10 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax,
 
 		sug <- sort(unique(fpick$G))
 
-		if (is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
 			sel <- fpick$G==sug[i]
-			plotblank(eastr/1000, c(-BotDepMax, 0))
+			plot(eastr/1000, c(-BotDepMax, 0), type="n", las=1, xlab="", ylab="")
 			lines(c(0, xfromz(z=rep(BotDepMax-0.01, 2), maxz=BotDepMax, ints=ints,
         slopes=slopes, shore=0:1), eastr[c(2, 2, 1, 1)])/1000,
 				-c(botdepr[1], rep(BotDepMax, 2), botdepr[1], 0, 0, botdepr[1]))
@@ -379,36 +378,32 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax,
 		mtext("Water depth  (m)", side=2, outer=TRUE)
 		mtext(paste(LakeName, "- Side View"), side=3, outer=TRUE, font=2)
 
-		if (is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
 			sel <- fpick$G==sug[i]
-			plotblank(eastr/1000, northr/1000)
+			plot(eastr/1000, northr/1000, type="n", las=1, xlab="", ylab="")
 			text(fpick$f.east[sel]/1000, fpick$f.north[sel]/1000, fpick$G[sel], col=i)
 		}
 		mtext("Easting  (km)", side=1, outer=TRUE)
 		mtext("Northing  (km)", side=2, outer=TRUE)
 		mtext(paste(LakeName, "- Top View"), side=3, outer=TRUE, font=2)
 
-		if (is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-		plotblank(fpick$len, -fpick$f.wdep, xlab="Fish length  (mm)",
+		plot(fpick$len, -fpick$f.wdep, type="n", las=1, xlab="Fish length  (mm)",
       ylab="Water depth  (m)", main=paste(LakeName, "- Size at Depth"))
 		for(i in seq(along=sug)) {
 			sel <- fpick$G==sug[i]
 			text(fpick$len[sel], -fpick$f.wdep[sel], fpick$G[sel], col=i)
 		}
 
-		if (is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
-		plotblank(fpick$ts, -fpick$f.wdep, xlab="Target strength  (dB)",
+		plot(fpick$ts, -fpick$f.wdep, type="n", las=1, xlab="Target strength  (dB)",
       ylab="Water depth  (m)", main=paste(LakeName, "- Size at Depth"))
 		for(i in seq(along=sug)) {
 			sel <- fpick$G==sug[i]
 			text(fpick$ts[sel], -fpick$f.wdep[sel], fpick$G[sel], col=i)
 		}
 
-		if (is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		for(i in seq(along=sug)) {
 			sel <- fpick$G==sug[i]
@@ -425,7 +420,6 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax,
 		# histograms of all fish
 
 		fishhist <- function(x, xlab, title, ...) {
-			if (is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 			par(mfrow=n2mfrow(length(sug)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 			for(i in seq(along=sug)) {
 				sel <- fish$G==sug[i]
@@ -456,7 +450,7 @@ SimFish <- function(LakeName, LkWidth, LkLength, BotDepMin, BotDepMax,
 		fishhist(fish$f.botdep, "Bottom Depth  (m)", "Bottom Depth Distribution",
       xlim=c(0, BotDepMax))
 
-		if (!is.na(PlotsPdf)) graphics.off()
+		if (PlotsPdf!=FALSE) graphics.off()
 
 		}
 

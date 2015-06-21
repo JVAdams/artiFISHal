@@ -215,7 +215,7 @@ AcMtEst <- function(SimPop, AcMtSurv, AcExcl=c(0, 0), MtExcl=c(0, 0),
 	for(k in sue) {
 
 		# subset the MT data
-		mtk <- mtrsel[mtrsel$Event==k & mtrsel$keep==1, ]
+		mtk <- droplevels(mtrsel[mtrsel$Event==k & mtrsel$keep==1, ])
 
 		# only do these calculations if there were "keep" fish in the midwater trawl
 		# without "keep" fish,
@@ -233,14 +233,19 @@ AcMtEst <- function(SimPop, AcMtSurv, AcExcl=c(0, 0), MtExcl=c(0, 0),
 
 			# fit a classification tree to the MTR data for Event k
 			treek <- rpart(as.factor(G) ~
-          interval + ACnorth + d2sh + botdep + layer + d2bot, data=mtk,
+        interval + ACnorth + d2sh + botdep + layer + d2bot,
+        data=mtk,
         control=list(cp=0.05, minsplit=10, minbucket=5))
 
 			# mean density for each species
 			# suffixes:  e = event, a = ac transect, i = interval, l = layer
 			# use the fitted tree to predict species composition of each
       #   AC interval/layer
-			pred.props <- predict(treek, newdata=ack)
+#       if (dim(treek$frame)[1] < 1.5 & length(sug) < 1.5) {
+#   			pred.props <- 1
+#       } else {
+     		pred.props <- predict(treek, newdata=ack)
+#       }
 			dens.eail <- ack$nperha*pred.props
 			dens.eai <- aggregate(dens.eail, ack[, c("ACid", "interval")], sum)
 			dens.e <- apply(dens.eai[, names(dens.eai) %in% sug], 2, mean)
@@ -250,8 +255,8 @@ AcMtEst <- function(SimPop, AcMtSurv, AcExcl=c(0, 0), MtExcl=c(0, 0),
 			mwt <- tapply(mtk$wt, list(treek$where, mtk$G), mean)
 			mwt[is.na(mwt)] <- 0
 
-			# proportions corresponding to each node
-			pred.node <- prednode(treek, newdata=ack)
+      # proportions corresponding to each node
+  		pred.node <- prednode(treek, newdata=ack)
 
 			# mean weigth expanded to full dimensions of ack, by matching node number
 			mwt.eail <- mwt[match(pred.node, row.names(mwt)), ]

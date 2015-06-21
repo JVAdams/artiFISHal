@@ -37,7 +37,7 @@
 #'
 #' @export
 #' @import
-#'   MASS jvamisc
+#'   MASS
 #' @seealso
 #'   \code{\link{SampFish}}
 #' @references

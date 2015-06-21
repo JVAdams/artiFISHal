@@ -1,19 +1,18 @@
 Package: artiFISHal
-Version: 1.0.0
-Date: 2015-03-08
+Version: 0.0.0.9001
+Date: 2015-06-21
 Title: A Pelagic Fish Community Simulator
 Authors@R: person(given="Jean V.", family="Adams", email="jvadams (at) usgs
     (dot) gov", role=c("aut", "cre"))
 Author: Jean V. Adams [aut, cre]
 Maintainer: Jean V. Adams <jvadams@usgs.gov>
 Depends:
-    R (>= 3.1.0)
+    R (>= 3.1.3)
 Imports:
     MASS,
     plotrix,
     rpanel,
-    rpart,
-    jvamisc
+    rpart
 Description: artiFISHal allows you to simulate and sample a population of fish.
     Use it to create an artificial lake and populate it with known numbers of
     fish (identified in species-size groups) to mimic pelagic fish communities.

@@ -41,8 +41,7 @@
 #'   default 6.
 #' @param PlotsPdf
 #'   A character scalar, name of pdf file to store the diagnostic plots in.
-#'   If NA, the default, plots are displayed on the screen instead.
-#'   If FALSE, no plots are created.
+#'   If FALSE, the default, no plots are created.
 #' @param Seed
 #'   An integer scalar, starting seed for stochasticity incorporated in
 #'   placement of acoustic transects and midwater trawl tows.
@@ -101,7 +100,7 @@
 #'
 #' @export
 #' @import
-#'   MASS jvamisc
+#'   MASS
 #' @seealso
 #'   \code{\link{SimFish}}
 #' @references
@@ -145,9 +144,12 @@
 #' head(surv$MtCatch)
 
 SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
-  MtNum, MtHt, MtWd, MtLen, MtMinCat=2, MtMulti=6, PlotsPdf=NA, Seed=NULL) {
+  MtNum, MtHt, MtWd, MtLen, MtMinCat=2, MtMulti=6, PlotsPdf=FALSE, Seed=NULL) {
 
-	if (!is.na(PlotsPdf) & PlotsPdf!=FALSE) {
+  if (is.na(PlotsPdf) | length(PlotsPdf)!=1 | is.numeric(PlotsPdf)) {
+    stop("PlotsPdf must be either a character scalar, or FALSE")
+  }
+  if (PlotsPdf!=FALSE) {
     pdf(PlotsPdf, width=9, height=6.5, title="Survey", paper="USr")
 	}
 
@@ -372,7 +374,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
 
 
 	###  diagnostic plots  ###
-	if (is.na(PlotsPdf) | PlotsPdf!=FALSE) {
+	if (PlotsPdf!=FALSE) {
 
 		sel <- AC$Event==1
 		ts.scaled <- (AC$ts[sel] - SimPop$FishInfo$TSRange[1])/
@@ -382,7 +384,6 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
 
 
     # top view of acoustic transects and midwater trawls - to scale
-		if (is.na(PlotsPdf)) dev.new(w=9, h=6.5, rescale="fit")
 		par(mfrow=c(1, 1), oma=rep(0, 4), mar=c(5.1, 4.1, 4.1, 2.1))
 		eqscplot(1, 1, type="n", xlim=eastr/1000, ylim=northr/1000, axes=FALSE,
       xlab="Easting  (km)", ylab="Northing  (km)",
@@ -406,11 +407,10 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
 
 
 		# plot of each acoustic transect with outline of midwater trawl tows
-		if (is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 		par(mfrow=n2mfrow(length(sua)), oma=c(2, 2, 2, 0), mar=c(3, 3, 1, 1))
 		catch.tots <- table(MTR$MTRid)
 		for(j in seq(along=sua)) {
-			plotblank(AC$f.east/1000, -AC$f.wdep)
+			plot(AC$f.east/1000, -AC$f.wdep, las=1, type="n", xlab="", ylab="")
 			sel3 <- AC$ACid==sua[j]
 			points(AC$f.east[sel3]/1000, -AC$f.wdep[sel3], cex=2*ts.scaled,
         col="blue")
@@ -444,7 +444,6 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
 			barz <- barz[, , dimnames(barz)[[3]] %in% sut, drop=FALSE]
 			barz <- barz[apply(barz, 1, sum)>0, , , drop=FALSE]
 			sus <- dimnames(barz)[[1]]
-			if (is.na(PlotsPdf)) dev.new(w=9, h=6.5)
 			par(mfrow=rev(n2mfrow(length(sut)+1)), oma=c(2, 2, 2, 0),
         mar=c(3, 3, 1, 1))
 			for(m in seq(along=sut)) {
@@ -454,7 +453,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
           line=-2.5, adj=0.98, font=2, cex=par("cex"))
 				box()
 			}
-			plotblank(axes=FALSE)
+			plot(0:1, 0:1, axes=FALSE, las=1, type="n", xlab="", ylab="")
 			legend("center", sus, fill=seq(sus), title="Group")
 			mtext("Length  (mm)", side=1, outer=TRUE)
 			mtext("Frequency", side=2, outer=TRUE)
@@ -463,7 +462,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
 			rm(barz, sus)
 		}
 
-		if (!is.na(PlotsPdf)) graphics.off()
+		if (PlotsPdf!=FALSE) graphics.off()
 
 	}
 

@@ -23,7 +23,7 @@
 #'
 #' @export
 #' @import
-#'   rpanel jvamisc
+#'   rpanel
 #' @seealso
 #'   \code{\link{AcMtEst}}, \code{\link{logit2}}
 #' @examples
@@ -40,7 +40,7 @@ TuneSelec <- function() {
 	# probability graphing function
 	double.draw <- function(panel) {
 		y <- logit2(panel$x, panel$L501, panel$SR1, panel$L502, -panel$SR2)
-		plotblank(xlim=range(panel$x[y>0.001]), ylim=0:1,
+		plot(0, 0, xlim=range(panel$x[y>0.001]), ylim=0:1, type="n", las=1,
       xlab="Fish length  (mm)", ylab="Midwater trawl selectivity")
 		abline(v=c(panel$L501, panel$L502), col="gray", lwd=2)
 		abline(h=c(0, 0.5, 1), col="gray", lwd=2)
@@ -49,7 +49,7 @@ TuneSelec <- function() {
 	}
 
 	# plot it, with a slider to adjust coeficients of the double logistic function
-	dev.new()
+#	dev.new()
 	par(mar=c(4, 4, 1, 1))
 	plot(1, 1)
 	panel <- rp.control(x=1:2000, L501=10.1, SR1=10.1, L502=200.1, SR2=20.1)

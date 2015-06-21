@@ -30,8 +30,6 @@
 #'   }
 #'
 #' @export
-#' @import
-#'   jvamisc
 #' @seealso
 #'   \code{\link{AcMtEst}}, \code{\link{logit2}}
 #' @examples
@@ -85,11 +83,11 @@ ViewSelec <- function(SelecParam) {
 	x <- floor(min(both$left[is.finite(both$left)], na.rm=TRUE)):
     ceiling(max(both$right[is.finite(both$right)], na.rm=TRUE))
 
-	dev.new()
 	par(mfrow=c(2, 2), mar=c(3, 3, 2, 1), oma=c(2, 2, 0, 0))
 	for(z in 1:length(suz)) {
 		sel <- both$Zone==suz[z]
-		plotblank(xlim=range(x), main=suz[z])
+		plot(0:1, 0:1, type="n", las=1, xlim=range(x),
+      xlab="", ylab="", main=suz[z])
 		abline(h=c(0, 0.5, 1), col="gray", lwd=2)
 		for(g in 1:length(sug)) {
 			sel2 <- both$Zone==suz[z] & both$G==sug[g]
@@ -98,7 +96,7 @@ ViewSelec <- function(SelecParam) {
 			lines(spline(x, y, 1000), lwd=3, col=g)
 			}
 		}
-	legend("bottomright", sug, col=seq(sug), lwd=3, bty="n")
+	legend("bottomright", as.character(sug), col=seq(sug), lwd=3, bty="n")
 	mtext("Fish length  (mm)", side=1, outer=TRUE)
 	mtext("Midwater trawl selectivity", side=2, outer=TRUE)
 

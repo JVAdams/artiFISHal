@@ -86,7 +86,7 @@ MeshPass <- function(BarMesh, H2WRatio, L2HRatio=NA, Plot=TRUE) {
 			title2 <- paste0('Bar mesh = ', BarMesh, '", mesh ratio = ',
         signif (H2WRatio, 3), ', fish length/height = ', signif (L2HRatio, 3))
 		}
-		dev.new(rescale="fit")
+#		dev.new(rescale="fit")
 		eqscplot(0, 0, type="n", xlim=c(-H, H), ylim=c(-W, W), las=1,
       xlab="Inches", ylab="Inches", main=title1)
 		addfish(r)
