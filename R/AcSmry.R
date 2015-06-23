@@ -31,7 +31,7 @@
 #'   A weighting variable, range weight (Yule 2000), is used to account for
 #'   different volumes of water sampled in the acoustic survey as a function of
 #'   the distance from the transducer (in m) and the transducer half angle
-#'   (0.5 * \code{AcAngle}).
+#'   (\code{AcAngle/2}).
 #'   The sum of the range weights is reported as \code{sum.rw} in the
 #'   \code{AcCell} and \code{AcColumn} data frames.
 #'
@@ -76,7 +76,8 @@ AcSmry <- function(AcTarg, LakeInfo, SurvParam) {
   # add "range weight" to the AcTarg data (Yule 2000)
   # a weighting variable to account for different volumes sampled as a
   #   function of range (dist. from ducer in m) and ducer half angle
-  AcTarg$rng.wt <- 1/(2*AcTarg$f.wdep*tan(SurvParam["AcAngle"]))
+  angleRadians <- 2*pi*SurvParam["AcAngle"]/360
+  AcTarg$rng.wt <- 1/(2*AcTarg$f.wdep*tan(angleRadians/2))
 
   # summarize acoustic data by interval and layer
   AC2 <- aggregate(AcTarg[, "rng.wt"],

@@ -191,6 +191,9 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
 
 	if (!is.null(Seed)) set.seed(Seed)
 
+  # convert full down-looking angle from degrees to radians
+  angleRadians <- 2*pi*AcAngle/360
+
 	for(k in 1:NumEvents) {
 		sel <- sampinfo$Event==k
 		ACstart <- runif (1, northr[1], northr[2])
@@ -213,7 +216,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
 		sampinfo$MTRd2bot[sel] <- sampinfo$MTRbdep[sel] - sampinfo$MTRwdep[sel]
 
 		# make sure acoustic transect cones don't overlap
-		mindist.allowed <- SimPop$LakeInfo$BotDepMax*tan(pi*AcAngle/2/360)
+		mindist.allowed <- SimPop$LakeInfo$BotDepMax*tan(angleRadians/4)
 		mindist.observed <- min(diff(sort(ACnorth)))
 		if (mindist.observed < mindist.allowed) {
       warning("Acoustic transects are too close together.\nTry again with fewer acoustic transects.")
@@ -249,9 +252,6 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
 
 	# acoustic transects
 
-	# convert half of the down-looking angle from degrees to radians
-	half.cone.rad <- 2*pi*(AcAngle/2)/360
-
 	# select only those targets within the volume of space sampled by
   #   the acoustic transect (triangular prism)
 	sua <- sort(unique(ACsampinfo$ACid))
@@ -259,7 +259,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
     c("Event", "ACid", "ACnorth", "G", "f.east", "f.north", "f.d2sh",
       "f.botdep", "f.wdep", "f.d2bot", "len", "wt", "ts"))))
 	# acoustic slice cone cushion, based on angle of ducer and maximum depth
-	cushion <- SimPop$LakeInfo$BotDepMax*tan(half.cone.rad)
+	cushion <- SimPop$LakeInfo$BotDepMax*tan(angleRadians/2)
 
 	# create a single row of missing values that looks just like
   #   the "fish" data frame
@@ -282,7 +282,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
 				"  \nTry again using a different Seed or using fewer acoustic transects."))
 		}
 		sel <- (abs(SimPop$Fish$f.north - ACsampinfo$ACnorth[j])) <
-      (SimPop$Fish$f.wdep*tan(half.cone.rad))
+      (SimPop$Fish$f.wdep*tan(angleRadians/2))
 
 		if (sum(sel)>0) {
 			temp <- data.frame(
