@@ -90,189 +90,189 @@
 #' # parameters for small (a) and large (A) alewife as input to the simulator
 #' fishp <- data.frame(
 #'   G = c("a", "A", "A"),
-#' 	 Z = c(50, 140, 140), ZE = c(0.25, 0.2, 0.2),
-#' 	 LWC1 = 0.000014, LWC2 = 2.8638, LWCE = 0.18,
-#' 	 TSC1 = -64.2, TSC2 = 20.5, TSCE = c(0.02, 0.07, 0.07),
-#' 	 PropN = c(0.55, 0.25, 0.20),
-#' 	 E = c(NA, 900, 2800), EE = c(NA, 4.5, 0.3),
-#' 	 N = NA, NE = NA,
-#' 	 WD = c(5, 15, 15), WDE = c(0.5, 0.7, 0.7),
-#' 	 D2B = NA, D2BE = NA
+#'    Z = c(50, 140, 140), ZE = c(0.25, 0.2, 0.2),
+#'    LWC1 = 0.000014, LWC2 = 2.8638, LWCE = 0.18,
+#'    TSC1 = -64.2, TSC2 = 20.5, TSCE = c(0.02, 0.07, 0.07),
+#'    PropN = c(0.55, 0.25, 0.20),
+#'    E = c(NA, 900, 2800), EE = c(NA, 4.5, 0.3),
+#'    N = NA, NE = NA,
+#'    WD = c(5, 15, 15), WDE = c(0.5, 0.7, 0.7),
+#'    D2B = NA, D2BE = NA
 #' )
 #'
 #' # simulate the fish population
 #' res <- SimFish(LakeName="Clear Lake", LkWidth=3000, LkLength=2000,
-#'	 BotDepMin=20, BotDepMax=100, FishParam=fishp, TotNFish=50000)
+#'   BotDepMin=20, BotDepMax=100, FishParam=fishp, TotNFish=50000)
 #'
 #' # survey the population
 #' surv <- SampFish(SimPop=res, NumEvents=2, AcNum=5, AcInterval=3000,
-#'	 AcLayer=10, AcAngle=7, MtNum=25, MtHt=10, MtWd=10, MtLen=200)
+#'   AcLayer=10, AcAngle=7, MtNum=25, MtHt=10, MtWd=10, MtLen=200)
 #'
 #' selec <- data.frame(
-#' 	 G = c("A", "a", "A", "a", "A", "a"),
-#' 	 Zone = c("mouth", "mouth", "middle", "middle", "aft", "aft"),
-#' 	 MtL50Small = c(100, 100, 60, 60, 30, 30),
-#' 	 MtSlopeSmall = c(40, 40, 30, 30, 20, 20),
-#' 	 MtL50Large = c(180, 180, Inf, Inf, Inf, Inf),
-#' 	 MtSlopeLarge = c(20, 20, 100, 100, 100, 100)
+#'    G = c("A", "a", "A", "a", "A", "a"),
+#'    Zone = c("mouth", "mouth", "middle", "middle", "aft", "aft"),
+#'    MtL50Small = c(100, 100, 60, 60, 30, 30),
+#'    MtSlopeSmall = c(40, 40, 30, 30, 20, 20),
+#'    MtL50Large = c(180, 180, Inf, Inf, Inf, Inf),
+#'    MtSlopeLarge = c(20, 20, 100, 100, 100, 100)
 #' )
 #'
 #' AcMtEst(SimPop=res, AcMtSurv=surv, Seed=927)
 #' AcMtEst(SimPop=res, AcMtSurv=surv, AcExcl=c(5, 10),
-#'	 MtExcl=c(2, 2), SelecParam=selec, Seed=204)
+#'   MtExcl=c(2, 2), SelecParam=selec, Seed=204)
 
 AcMtEst <- function(SimPop, AcMtSurv, AcExcl=c(0, 0), MtExcl=c(0, 0),
   PanelProps=c(0.4, 0.3, 0.2, 0.1), SelecParam=NULL, Seed=NULL) {
 
-	if (!is.null(Seed)) set.seed(Seed)
-	mtr <- AcMtSurv$MtCatch
-	srv <- AcMtSurv$SurvParam
-	ac <- AcMtSurv$Targets
+  if (!is.null(Seed)) set.seed(Seed)
+  mtr <- AcMtSurv$MtCatch
+  srv <- AcMtSurv$SurvParam
+  ac <- AcMtSurv$Targets
 
-	# check validity of the trawl zone proportions that were input
-	names(PanelProps) <- c("mouth", "middle", "aft", "cod")
-	panelprops <- rev(PanelProps)
-	if (round(sum(panelprops), 7) != 1) {
+  # check validity of the trawl zone proportions that were input
+  names(PanelProps) <- c("mouth", "middle", "aft", "cod")
+  panelprops <- rev(PanelProps)
+  if (round(sum(panelprops), 7) != 1) {
     stop("cod proportions should sum to 1")
-	}
+  }
 
-	# availability function, = 0 at surface and bottom and = 1 in the middle
-	dblcut <- function(wdep, surfacecut, d2bot, bottomcut) {
-		as.numeric(wdep > surfacecut & d2bot > bottomcut)
-	}
+  # availability function, = 0 at surface and bottom and = 1 in the middle
+  dblcut <- function(wdep, surfacecut, d2bot, bottomcut) {
+    as.numeric(wdep > surfacecut & d2bot > bottomcut)
+  }
 
-	# acoustic availability
-	ac$keep <- with(ac, dblcut(wdep=f.wdep, surfacecut=AcExcl[1], d2bot=f.d2bot,
+  # acoustic availability
+  ac$keep <- with(ac, dblcut(wdep=f.wdep, surfacecut=AcExcl[1], d2bot=f.d2bot,
     bottomcut=AcExcl[2]))
 
-	# summarize by cell (interval x layer)
-	acs <- AcSmry(AcTarg=ac[ac$keep==1, ], LakeInfo=SimPop$LakeInfo,
+  # summarize by cell (interval x layer)
+  acs <- AcSmry(AcTarg=ac[ac$keep==1, ], LakeInfo=SimPop$LakeInfo,
     SurvParam=AcMtSurv$SurvParam)$AcCell
 
-	# midwater trawl availability
+  # midwater trawl availability
 
-	if (is.null(SelecParam)) {
-		SelecParam <- data.frame(
-			G = character(),
-			Zone = character(),
-			MtL50Small = numeric(0),
-			MtSlopeSmall = numeric(0),
-			MtL50Large = numeric(0),
-			MtSlopeLarge = numeric(0))
-		}
+  if (is.null(SelecParam)) {
+    SelecParam <- data.frame(
+      G = character(),
+      Zone = character(),
+      MtL50Small = numeric(0),
+      MtSlopeSmall = numeric(0),
+      MtL50Large = numeric(0),
+      MtSlopeLarge = numeric(0))
+    }
 
-	# check validity of zones
-	suz <- c("mouth", "middle", "aft", "cod")
-	uz <- unique(SelecParam$Zone)
-	badzones <- setdiff(uz, suz)
-	if (length(badzones) > 0) {
+  # check validity of zones
+  suz <- c("mouth", "middle", "aft", "cod")
+  uz <- unique(SelecParam$Zone)
+  badzones <- setdiff(uz, suz)
+  if (length(badzones) > 0) {
     stop('Zones must be one of "mouth", "middle", "aft", or "cod".')
-	}
+  }
 
-	# check for missings
-	missings <- sum(is.na(SelecParam))
-	if (missings > 0) {
+  # check for missings
+  missings <- sum(is.na(SelecParam))
+  if (missings > 0) {
     stop("SelectParam data frame may not have any missing values.")
-	}
+  }
 
-	# fill in 100% selectivities for group-zones with no parameters
-	sug <- sort(unique(AcMtSurv$MtCatch$G))
-	full <- expand.grid(G=sug, Zone=suz)
-	selec2 <- merge(SelecParam, full, all=TRUE)
-	sel100 <- is.na(selec2$MtL50Small)
-	selec2$MtL50Small[sel100] <- -Inf
-	selec2$MtSlopeSmall[sel100] <- 100
-	selec2$MtL50Large[sel100] <- Inf
-	selec2$MtSlopeLarge[sel100] <- 200
+  # fill in 100% selectivities for group-zones with no parameters
+  sug <- sort(unique(AcMtSurv$MtCatch$G))
+  full <- expand.grid(G=sug, Zone=suz)
+  selec2 <- merge(SelecParam, full, all=TRUE)
+  sel100 <- is.na(selec2$MtL50Small)
+  selec2$MtL50Small[sel100] <- -Inf
+  selec2$MtSlopeSmall[sel100] <- 100
+  selec2$MtL50Large[sel100] <- Inf
+  selec2$MtSlopeLarge[sel100] <- 200
 
-	# for each fish, determine its maximum vertical or horizontal distance from
+  # for each fish, determine its maximum vertical or horizontal distance from
   #   the center of the trawl as a proportion of the trawl dimensions
-	mtr$maxdist <- with(mtr, pmax(abs(f.wdep - MTRwdep)/srv["MtHt"],
+  mtr$maxdist <- with(mtr, pmax(abs(f.wdep - MTRwdep)/srv["MtHt"],
     abs(f.north - ACnorth)/srv["MtWd"]))
-	# use this distance to assign each fish to a zone of the trawl
-	mtr$Zone <- cut(mtr$maxdist, breaks=c(0, cumsum(panelprops)),
+  # use this distance to assign each fish to a zone of the trawl
+  mtr$Zone <- cut(mtr$maxdist, breaks=c(0, cumsum(panelprops)),
     include.lowest=TRUE, labels=names(panelprops))
-	mtrsel <- merge(mtr, selec2, all.x=TRUE)
+  mtrsel <- merge(mtr, selec2, all.x=TRUE)
 
-	# Think about trawl availability ... when we are cutting off trawls near the
+  # Think about trawl availability ... when we are cutting off trawls near the
   #   surface or the bottom, shouldn't this constraint happen during the survey
   #   itself, where trawls that encompass those "dead" zones can be eliminated?
 
-	mtrsel$p.avail <- with(mtrsel, dblcut(wdep=f.wdep, surfacecut=MtExcl[1],
+  mtrsel$p.avail <- with(mtrsel, dblcut(wdep=f.wdep, surfacecut=MtExcl[1],
     d2bot=f.d2bot, bottomcut=MtExcl[2]))
-	mtrsel$p.selec <- with(mtrsel, logit2(x=len, x50a=MtL50Small,
+  mtrsel$p.selec <- with(mtrsel, logit2(x=len, x50a=MtL50Small,
     slopea=MtSlopeSmall, x50b=MtL50Large, slopeb=-MtSlopeLarge))
-	mtrsel$p.catch <- mtrsel$p.avail*mtrsel$p.selec
+  mtrsel$p.catch <- mtrsel$p.avail*mtrsel$p.selec
 
-	# apply catchability (selectivity AND availability) functions to
+  # apply catchability (selectivity AND availability) functions to
   #   "perfect" MTR catch
-	mtrsel$keep <- sapply(mtrsel$p.catch, function(p)
+  mtrsel$keep <- sapply(mtrsel$p.catch, function(p)
     sample(0:1, size=1, replace=TRUE, prob=c(1-p, p)))
 
-	sue <- sort(unique(acs$Event))
-	results <- expand.grid(G=sug, Event=sue, nperha=NA, kgperha=NA)
+  sue <- sort(unique(acs$Event))
+  results <- expand.grid(G=sug, Event=sue, nperha=NA, kgperha=NA)
 
-	for(k in sue) {
+  for(k in sue) {
 
-		# subset the MT data
-		mtk <- droplevels(mtrsel[mtrsel$Event==k & mtrsel$keep==1, ])
+    # subset the MT data
+    mtk <- droplevels(mtrsel[mtrsel$Event==k & mtrsel$keep==1, ])
 
-		# only do these calculations if there were "keep" fish in the midwater trawl
-		# without "keep" fish,
+    # only do these calculations if there were "keep" fish in the midwater trawl
+    # without "keep" fish,
     #   no species-specific density and biomass can be estimated
-		if (dim(mtk)[1] > 0) {
+    if (dim(mtk)[1] > 0) {
 
-			# subset the AC data
-			ack <- acs[acs$Event==k, ]
+      # subset the AC data
+      ack <- acs[acs$Event==k, ]
 
-			# make the variable names in mtk the same as in those in
+      # make the variable names in mtk the same as in those in
       # ack for tree prediction
-			names(mtk)[match(c("MTReast", "MTRd2sh", "MTRbdep", "MTRwdep",
+      names(mtk)[match(c("MTReast", "MTRd2sh", "MTRbdep", "MTRwdep",
         "MTRd2bot"), names(mtk))] <-
         c("interval", "d2sh", "botdep", "layer", "d2bot")
 
-			# fit a classification tree to the MTR data for Event k
-			treek <- rpart(as.factor(G) ~
+      # fit a classification tree to the MTR data for Event k
+      treek <- rpart(as.factor(G) ~
         interval + ACnorth + d2sh + botdep + layer + d2bot,
         data=mtk,
         control=list(cp=0.05, minsplit=10, minbucket=5))
 
-			# mean density for each species
-			# suffixes:  e = event, a = ac transect, i = interval, l = layer
-			# use the fitted tree to predict species composition of each
+      # mean density for each species
+      # suffixes:  e = event, a = ac transect, i = interval, l = layer
+      # use the fitted tree to predict species composition of each
       #   AC interval/layer
 #       if (dim(treek$frame)[1] < 1.5 & length(sug) < 1.5) {
-#   			pred.props <- 1
+#         pred.props <- 1
 #       } else {
-     		pred.props <- predict(treek, newdata=ack)
+         pred.props <- predict(treek, newdata=ack)
 #       }
-			dens.eail <- ack$nperha*pred.props
-			dens.eai <- aggregate(dens.eail, ack[, c("ACid", "interval")], sum)
-			dens.e <- apply(dens.eai[, names(dens.eai) %in% sug], 2, mean)
+      dens.eail <- ack$nperha*pred.props
+      dens.eai <- aggregate(dens.eail, ack[, c("ACid", "interval")], sum)
+      dens.e <- apply(dens.eai[, names(dens.eai) %in% sug], 2, mean)
 
-			# mean biomass for each species
-			# calculate the mean weight of each group at each node of the fitted tree
-			mwt <- tapply(mtk$wt, list(treek$where, mtk$G), mean)
-			mwt[is.na(mwt)] <- 0
+      # mean biomass for each species
+      # calculate the mean weight of each group at each node of the fitted tree
+      mwt <- tapply(mtk$wt, list(treek$where, mtk$G), mean)
+      mwt[is.na(mwt)] <- 0
 
       # proportions corresponding to each node
-  		pred.node <- prednode(treek, newdata=ack)
+      pred.node <- prednode(treek, newdata=ack)
 
-			# mean weigth expanded to full dimensions of ack, by matching node number
-			mwt.eail <- mwt[match(pred.node, row.names(mwt)), ]
-			bio.eail <- mwt.eail * dens.eail
-			bio.eai <- aggregate(bio.eail, ack[, c("ACid", "interval")], sum)
-			bio.e <- apply(bio.eai[, names(bio.eai) %in% sug], 2, mean)
+      # mean weigth expanded to full dimensions of ack, by matching node number
+      mwt.eail <- mwt[match(pred.node, row.names(mwt)), ]
+      bio.eail <- mwt.eail * dens.eail
+      bio.eai <- aggregate(bio.eail, ack[, c("ACid", "interval")], sum)
+      bio.e <- apply(bio.eai[, names(bio.eai) %in% sug], 2, mean)
 
-			for(g in seq(sug)) {
-				sel <- results$Event==k & results$G==sug[g]
-				results$nperha[sel] <- dens.e[sug[g]]
-			  results$kgperha[sel] <- bio.e[sug[g]]/1000
-			}
-		}
-	}
+      for(g in seq(sug)) {
+        sel <- results$Event==k & results$G==sug[g]
+        results$nperha[sel] <- dens.e[sug[g]]
+        results$kgperha[sel] <- bio.e[sug[g]]/1000
+      }
+    }
+  }
 
-	results$nperha[is.na(results$nperha)] <- 0
-	results$kgperha[is.na(results$kgperha)] <- 0
-	results[, c("Event", "G", "nperha", "kgperha")]
+  results$nperha[is.na(results$nperha)] <- 0
+  results$kgperha[is.na(results$kgperha)] <- 0
+  results[, c("Event", "G", "nperha", "kgperha")]
 }
