@@ -36,68 +36,68 @@
 #' \dontrun{
 #'
 #' selec <- data.frame(
-#' 	G = c("A", "a", "A", "a", "A", "a"),
-#' 	Zone = c("mouth", "mouth", "middle", "middle", "aft", "aft"),
-#' 	MtL50Small = c(100, 90, 60, 50, 30, 2),
-#' 	MtSlopeSmall = c(40, 40, 30, 30, 20, 20),
-#' 	MtL50Large = c(180, 180, Inf, Inf, Inf, Inf),
-#' 	MtSlopeLarge = c(20, 20, 100, 100, 100, 100)
+#'   G = c("A", "a", "A", "a", "A", "a"),
+#'   Zone = c("mouth", "mouth", "middle", "middle", "aft", "aft"),
+#'   MtL50Small = c(100, 90, 60, 50, 30, 2),
+#'   MtSlopeSmall = c(40, 40, 30, 30, 20, 20),
+#'   MtL50Large = c(180, 180, Inf, Inf, Inf, Inf),
+#'   MtSlopeLarge = c(20, 20, 100, 100, 100, 100)
 #' )
 #' ViewSelec(selec)
 #' }
 
 ViewSelec <- function(SelecParam) {
 
-	# check validity of zones
-	suz <- c("mouth", "middle", "aft", "cod")
-	uz <- unique(SelecParam$Zone)
-	badzones <- setdiff(uz, suz)
-	if (length(badzones) > 0) {
+  # check validity of zones
+  suz <- c("mouth", "middle", "aft", "cod")
+  uz <- unique(SelecParam$Zone)
+  badzones <- setdiff(uz, suz)
+  if (length(badzones) > 0) {
     stop('Zones must be one of "mouth", "middle", "aft", or "cod".')
-	}
+  }
 
-	# check for missings
-	missings <- sum(is.na(SelecParam))
-	if (missings > 0) {
+  # check for missings
+  missings <- sum(is.na(SelecParam))
+  if (missings > 0) {
     stop("SelectParam data frame may not have any missing values.")
-	}
+  }
 
-	# calculate lengths at small probabilities for plotting limits
-	smallp <- 0.01
-	SelecParam$left <- SelecParam$MtL50Small -
+  # calculate lengths at small probabilities for plotting limits
+  smallp <- 0.01
+  SelecParam$left <- SelecParam$MtL50Small -
     log((1-smallp)/smallp)*SelecParam$MtSlopeSmall
-	SelecParam$left[SelecParam$left < 0] <- 0
-	SelecParam$right <- SelecParam$MtL50Large -
+  SelecParam$left[SelecParam$left < 0] <- 0
+  SelecParam$right <- SelecParam$MtL50Large -
     log((1-smallp)/smallp)*(-SelecParam$MtSlopeLarge)
 
-	# fill in 100% selectivities for group-zones with no parameters
-	sug <- sort(unique(SelecParam$G))
-	full <- expand.grid(G=sug, Zone=suz)
-	both <- merge(SelecParam, full, all=TRUE)
-	sel100 <- is.na(both$MtL50Small)
-	both$MtL50Small[sel100] <- -Inf
-	both$MtSlopeSmall[sel100] <- 100
-	both$MtL50Large[sel100] <- Inf
-	both$MtSlopeLarge[sel100] <- 200
+  # fill in 100% selectivities for group-zones with no parameters
+  sug <- sort(unique(SelecParam$G))
+  full <- expand.grid(G=sug, Zone=suz)
+  both <- merge(SelecParam, full, all=TRUE)
+  sel100 <- is.na(both$MtL50Small)
+  both$MtL50Small[sel100] <- -Inf
+  both$MtSlopeSmall[sel100] <- 100
+  both$MtL50Large[sel100] <- Inf
+  both$MtSlopeLarge[sel100] <- 200
 
-	x <- floor(min(both$left[is.finite(both$left)], na.rm=TRUE)):
+  x <- floor(min(both$left[is.finite(both$left)], na.rm=TRUE)):
     ceiling(max(both$right[is.finite(both$right)], na.rm=TRUE))
 
-	par(mfrow=c(2, 2), mar=c(3, 3, 2, 1), oma=c(2, 2, 0, 0))
-	for(z in 1:length(suz)) {
-		sel <- both$Zone==suz[z]
-		plot(0:1, 0:1, type="n", las=1, xlim=range(x),
+  par(mfrow=c(2, 2), mar=c(3, 3, 2, 1), oma=c(2, 2, 0, 0))
+  for(z in 1:length(suz)) {
+    sel <- both$Zone==suz[z]
+    plot(0:1, 0:1, type="n", las=1, xlim=range(x),
       xlab="", ylab="", main=suz[z])
-		abline(h=c(0, 0.5, 1), col="gray", lwd=2)
-		for(g in 1:length(sug)) {
-			sel2 <- both$Zone==suz[z] & both$G==sug[g]
-			y <- logit2(x, both$MtL50Small[sel2], both$MtSlopeSmall[sel2],
+    abline(h=c(0, 0.5, 1), col="gray", lwd=2)
+    for(g in 1:length(sug)) {
+      sel2 <- both$Zone==suz[z] & both$G==sug[g]
+      y <- logit2(x, both$MtL50Small[sel2], both$MtSlopeSmall[sel2],
         both$MtL50Large[sel2], -both$MtSlopeLarge[sel2])
-			lines(spline(x, y, 1000), lwd=3, col=g)
-			}
-		}
-	legend("bottomright", as.character(sug), col=seq(sug), lwd=3, bty="n")
-	mtext("Fish length  (mm)", side=1, outer=TRUE)
-	mtext("Midwater trawl selectivity", side=2, outer=TRUE)
+      lines(spline(x, y, 1000), lwd=3, col=g)
+      }
+    }
+  legend("bottomright", as.character(sug), col=seq(sug), lwd=3, bty="n")
+  mtext("Fish length  (mm)", side=1, outer=TRUE)
+  mtext("Midwater trawl selectivity", side=2, outer=TRUE)
 
 }

@@ -27,15 +27,15 @@
 #'   two eastings for each bottom depth (except for the depth at the vertex).
 
 xfromz <- function(z, maxz, ints, slopes, shore="random") {
-	x <- rep(NA, length(z))
-	side <- if (shore[1]=="random") {
+  x <- rep(NA, length(z))
+  side <- if (shore[1]=="random") {
     sample(0:1, length(z), replace=TRUE)
-	} else {
+  } else {
     shore
-	}
-	x[!is.na(z) & side==0] <- (z[!is.na(z) & side==0] - ints[1]) / slopes[1]
-	x[!is.na(z) & side==1] <- (z[!is.na(z) & side==1] - ints[2]) / slopes[2]
-	x[z >= maxz] <- runif(sum(z >= maxz), (maxz - ints[1]) / slopes[1],
+  }
+  x[!is.na(z) & side==0] <- (z[!is.na(z) & side==0] - ints[1]) / slopes[1]
+  x[!is.na(z) & side==1] <- (z[!is.na(z) & side==1] - ints[2]) / slopes[2]
+  x[z >= maxz] <- runif(sum(z >= maxz), (maxz - ints[1]) / slopes[1],
     (maxz - ints[2]) / slopes[2])
-	x
+  x
 }

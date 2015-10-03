@@ -18,7 +18,7 @@
 #' located directly in the center of the oncoming trawl path.
 #'
 #' @export
-#' @import 				MASS
+#' @import         MASS
 #' @seealso \code{\link{AcMtEst}}
 #' @examples
 #'
@@ -29,25 +29,25 @@
 #'
 
 ViewZones <- function(PanelProps=c(0.4, 0.3, 0.2, 0.1)) {
-	# check validity of the trawl zone proportions that were input
-	if (round(sum(PanelProps), 7) != 1) stop("Panel proportions should sum to 1.")
+  # check validity of the trawl zone proportions that were input
+  if (round(sum(PanelProps), 7) != 1) stop("Panel proportions should sum to 1.")
 
-	mouth.edge <- 1
-	middle.edge <- 1 - PanelProps[1]
-	aft.edge <- middle.edge - PanelProps[2]
-	cod.edge <- aft.edge - PanelProps[3]
+  mouth.edge <- 1
+  middle.edge <- 1 - PanelProps[1]
+  aft.edge <- middle.edge - PanelProps[2]
+  cod.edge <- aft.edge - PanelProps[3]
 
-	dev.new(rescale="fit")
-	par(mar=rep(0.1, 4), cex=2)
-	eqscplot(0, 0, xlim=c(-1, 1), ylim=c(-1, 1), type="n", axes=FALSE,
+  dev.new(rescale="fit")
+  par(mar=rep(0.1, 4), cex=2)
+  eqscplot(0, 0, xlim=c(-1, 1), ylim=c(-1, 1), type="n", axes=FALSE,
     xlab="", ylab="")
-	polygon(mouth.edge*c(-1, 1, 1, -1), mouth.edge*c(-1, -1, 1, 1), col=gray(0.4))
-	polygon(middle.edge*c(-1, 1, 1, -1), middle.edge*c(-1, -1, 1, 1),
+  polygon(mouth.edge*c(-1, 1, 1, -1), mouth.edge*c(-1, -1, 1, 1), col=gray(0.4))
+  polygon(middle.edge*c(-1, 1, 1, -1), middle.edge*c(-1, -1, 1, 1),
     col=gray(0.6))
-	polygon(aft.edge*c(-1, 1, 1, -1), aft.edge*c(-1, -1, 1, 1), col=gray(0.8))
-	polygon(cod.edge*c(-1, 1, 1, -1), cod.edge*c(-1, -1, 1, 1), col=gray(1))
-	text(-middle.edge, middle.edge, "Mouth", pos=3, offset=0.1, col=gray(1))
-	text(-aft.edge, aft.edge, "Middle", pos=3, offset=0.1, col=gray(0))
-	text(-cod.edge, cod.edge, "Aft", pos=3, offset=0.1, col=gray(0.2))
-	text(0, 0, "Cod", col=gray(0.4))
+  polygon(aft.edge*c(-1, 1, 1, -1), aft.edge*c(-1, -1, 1, 1), col=gray(0.8))
+  polygon(cod.edge*c(-1, 1, 1, -1), cod.edge*c(-1, -1, 1, 1), col=gray(1))
+  text(-middle.edge, middle.edge, "Mouth", pos=3, offset=0.1, col=gray(1))
+  text(-aft.edge, aft.edge, "Middle", pos=3, offset=0.1, col=gray(0))
+  text(-cod.edge, cod.edge, "Aft", pos=3, offset=0.1, col=gray(0.2))
+  text(0, 0, "Cod", col=gray(0.4))
 }

@@ -24,10 +24,10 @@
 #'   \code{\link{SimFish}}, \code{\link{dfromx}}, \code{\link{xfromz}}.
 
 zfromx <- function(x, maxz, eastr, ints, slopes) {
-	z <- rep(NA, length(x))
-	z[!is.na(x) & x <= eastr[2]/3] <- slopes[1]*x[!is.na(x) &
+  z <- rep(NA, length(x))
+  z[!is.na(x) & x <= eastr[2]/3] <- slopes[1]*x[!is.na(x) &
       x <= eastr[2]/3] + ints[1]
-	z[!is.na(x) & x >  eastr[2]/3] <- slopes[2]*x[!is.na(x) &
+  z[!is.na(x) & x >  eastr[2]/3] <- slopes[2]*x[!is.na(x) &
       x >  eastr[2]/3] + ints[2]
-	ifelse(z > maxz, maxz, z)
-	}
+  ifelse(z > maxz, maxz, z)
+  }

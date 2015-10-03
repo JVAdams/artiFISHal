@@ -19,9 +19,9 @@
 #'   \code{\link{SimFish}}, \code{\link{zfromx}}, \code{\link{xfromz}}.
 
 dfromx <- function(x, d2shr.we, eastr) {
-	mid.d <- ((eastr[1]-d2shr.we[1]) + (eastr[2]+d2shr.we[2]) ) / 2
-	d <- rep(NA, length(x))
-	d[!is.na(x) & x <= mid.d] <-  d2shr.we[1] + x[!is.na(x) & x <= mid.d]
-	d[!is.na(x) & x >  mid.d] <- eastr[2] + d2shr.we[2] - x[!is.na(x) & x > mid.d]
-	d
-	}
+  mid.d <- ((eastr[1]-d2shr.we[1]) + (eastr[2]+d2shr.we[2]) ) / 2
+  d <- rep(NA, length(x))
+  d[!is.na(x) & x <= mid.d] <-  d2shr.we[1] + x[!is.na(x) & x <= mid.d]
+  d[!is.na(x) & x >  mid.d] <- eastr[2] + d2shr.we[2] - x[!is.na(x) & x > mid.d]
+  d
+  }

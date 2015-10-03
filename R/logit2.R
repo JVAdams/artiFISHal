@@ -47,7 +47,7 @@
 #'
 
 logit2 <- function(x, x50a, slopea, x50b, slopeb) {
-	proba <- plogis(x, location=x50a, scale=slopea)
-	probb <- 1 - plogis(x, location=x50b, scale=-slopeb)
-	proba*probb
+  proba <- plogis(x, location=x50a, scale=slopea)
+  probb <- 1 - plogis(x, location=x50b, scale=-slopeb)
+  proba*probb
 }
