@@ -170,8 +170,10 @@ For the target data, fish are excluded from the sample if they are located in zo
 For the catch data, fish are excluded from the sample if they are located in zones unavailable to the midwater trawl specified with the argument `MtExcl`.  In addition, selectivity curves can be specified for different panels of the midwater trawl using the arguments `PanelProps` and `SelecParam`.  The `PanelProps` argument is used to denote the relative sizes of four different panels in the trawl, from the mouth (outermost panel) to the cod end (innermost panel).  You can get a fish's-eye view of the panel sizes denoted using the `ViewZones` function. 
 
     ViewZones(PanelProp = c(0.4, 0.3, 0.2, 0.1))
+    
+eee
 
-![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide7.PNG)
+![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide7(Custom).PNG)
 
 The `SelecParam` argument is used to denote the mesh selectivity for each fish group (species, life stage) and trawl panel zone.  You can use the `MeshPass` function to determine the largest height (or depth) of a fish that can pass through a single diamond-shaped mesh of a net, provided the size of the mesh `BarMesh`, the height to width ratio of the mesh `H2WRatio`, and the length to height ratio of the fish `L2HRatio`.
 
