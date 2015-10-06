@@ -3,7 +3,7 @@
 #' Summarize acoustic survey data by interval and layer.
 #'
 #' @param AcTarg
-#'   A data frame list with information on fish detected in an acoustics survey,
+#'   A data frame with information on fish detected in an acoustics survey,
 #'   specifically the \code{Targets} data frame output from
 #'   \code{\link{SampFish}}.  Each row represents a single target,
 #'   columns describe the specific location of fish in the lake and
