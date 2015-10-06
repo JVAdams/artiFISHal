@@ -1,5 +1,5 @@
 ---
-title: "Introduction to artiFISHal Vignette"
+title: "Introduction to artiFISHal"
 author: "Jean V. Adams"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -113,8 +113,6 @@ head(myfish$Fish)
 
 Simulating a fish population that looks the way you intended may take some trial and error.  If you specify `PlotsPdf = TRUE` in the `SimFish()` function, a pdf file is created with a series of graphs illustrating the fish population that you've simulated to aid in this trial and error process.  Some examples are shown below.
 
-eee
-
 ![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide1(Custom).BMP)
 ![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide6(Custom).BMP)
 
@@ -171,8 +169,6 @@ For the catch data, fish are excluded from the sample if they are located in zon
 
     ViewZones(PanelProp = c(0.4, 0.3, 0.2, 0.1))
     
-eee
-
 ![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide7(Custom).PNG)
 
 The `SelecParam` argument is used to denote the mesh selectivity for each fish group (species, life stage) and trawl panel zone.  You can use the `MeshPass` function to determine the largest height (or depth) of a fish that can pass through a single diamond-shaped mesh of a net, provided the size of the mesh `BarMesh`, the height to width ratio of the mesh `H2WRatio`, and the length to height ratio of the fish `L2HRatio`.
@@ -184,8 +180,6 @@ MeshPass(BarMesh=2, H2WRatio=0.3, L2HRatio=4)
 A double logistic regression function is used to specify selectivity as a function of fish total length using two slopes and two inflection points.  If you have some notion of what the selectivity curve should look like, you can use the `TuneSelec` function to discover the corresponding parameters using interactive *sliders*. 
 
     TuneSelec()
-
-eee
 
 ![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide9(Custom).PNG)
 ![Dose-effect relation](https://raw.githubusercontent.com/JVAdams/artiFISHal/master/images/Slide10(Custom).PNG)
@@ -212,58 +206,7 @@ ViewSelec(selec)
 If all looks well, you can now derive estimates from the survey, incorporating these availabilities and selectivities. 
 
 ```{r}
-imperf <- AcMtEst(SimPop=myfish, AcMtSurv=mysurv, SelecParam=selec, AcExcl=c(5, 10), MtExcl=c(2, 2), Seed=204)
+imperf <- AcMtEst(SimPop=myfish, AcMtSurv=mysurv, AcExcl=c(5, 10), 
+  MtExcl=c(2, 2), SelecParam=selec, Seed=204)
 head(imperf)
 ```
-
-
-
-
-
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
