@@ -1,4 +1,16 @@
 .Rproj.user
 .Rhistory
 .RData
-inst/doc
+.gitignore
+* *.*
+*.d*
+*.g*
+*.j*
+*.p*
+*.Rproj
+*.t*
+*.x*
+*.z*
+*/
+# use Tools Shell to remove file from repository
+# git update-index --assume-unchanged <file>
