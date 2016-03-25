@@ -23,8 +23,8 @@
 #' version 0.0.0.9001.
 #' Written by Jean V. Adams, USGS - Great Lakes Science Center
 #' \href{http://www.glsc.usgs.gov/}{glsc.usgs.gov}, Ann Arbor, Michigan, USA.
-#' Written in programming language R (R Core Team, 2014,
-#' \href{http://www.R-project.org}{R-project.org}), version 3.1.3 (2015-03-09).
+#' Written in programming language R (R Core Team, 2015,
+#' \href{http://www.R-project.org}{R-project.org}), version 3.2.3 (2015-12-10).
 #' Run on a PC with Intel(R) Core(TM) I7-4600m CPU, 2.90 GHz processor,
 #' 16.0 GB RAM, and
 #' Microsoft Windows 7 Enterprise operating system 2009 Service Pack 1.

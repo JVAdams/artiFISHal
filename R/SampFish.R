@@ -208,8 +208,12 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
       ints=SimPop$LakeInfo$ints, slopes=SimPop$LakeInfo$slopes)
 
     # random selection of midwater trawl depth
-    sampinfo$MTRwdep[sel] <- runif (nT2, 0+(MtHt/2),
-      sampinfo$MTRbdep[sel]-(MtHt/2))
+    # Assign NA to those cases where bottom depth < trawl height
+    # These will be removed later
+    tooshallow <- 0+(MtHt/2) > sampinfo$MTRbdep[sel]-(MtHt/2)
+    sampinfo$MTRwdep[sel][tooshallow] <- NA
+    sampinfo$MTRwdep[sel][!tooshallow] <- runif (sum(!tooshallow), 0+(MtHt/2),
+      sampinfo$MTRbdep[sel][!tooshallow]-(MtHt/2))
 
     sampinfo$MTRd2sh[sel] <- dfromx(x=sampinfo$MTReast[sel], d2shr.we=d2shr.we,
       eastr=eastr)
@@ -243,7 +247,7 @@ SampFish <- function(SimPop, NumEvents=1, AcNum, AcInterval, AcLayer, AcAngle,
     sampinfo$MTReast - MtLen/2 < eastr[1] |
     sampinfo$MTReast + MtLen/2 > eastr[2]
 
-  sampinfo <- sampinfo[!hits.bottom & !extends.out, ]
+  sampinfo <- sampinfo[!hits.bottom & !extends.out & !is.na(sampinfo$MTRwdep), ]
 
   rm(ACid, ACspace, sel, ACstart, ACnorth, mindist.allowed, mindist.observed,
     MTRbdep1, MTRbdep2, hits.bottom, extends.out)
