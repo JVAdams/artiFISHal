@@ -7,22 +7,11 @@ artiFISHal
 
 - - -
 
-You should be able to access the functions by installing them directly from within R.
+You can access the functions by installing the package from within R.
 
-	library("devtools")
-	devtools::install_github("JVAdams/artiFISHal")
-	library(artiFISHal)
-
-If you don't already have `Rtools` and `devtools`, you will need to download and install (as administrator, if using a PC) `Rtools` from [CRAN](http://cran.r-project.org/bin/windows/Rtools/) then run the following lines of code before submitting the code above:
-
-	find_rtools()
-	install.packages("devtools")
-
-An alternative approach for Windows users is to download this 
-[zip file](https://github.com/JVAdams/artiFISHal/raw/master/artiFISHal.zip)
- and install the package from the R menu:
-- Packages
-- Install package(s) from local zip files...
+    source("https://raw.githubusercontent.com/MangoTheCat/remotes/master/install-github.R")$value("mangothecat/remotes")
+    remotes::install_github("JVAdams/artiFISHal")
+    library(artiFISHal)
 	
 - - -
 
